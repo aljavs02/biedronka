@@ -4,7 +4,7 @@
 This dataset contains three months of sales data from three Biedronka supermarket branches, including transaction details, customer demographics, product information, and feedback ratings. It’s ideal for analyzing customer behavior, branch performance, and satisfaction trends.
 
 ## Dataset Description
-Invoice ID: Unique identifier for each transaction.
+<ul>Invoice ID: Unique identifier for each transaction.
 Branch & City: Store branch (A, B, C) and location.
 Customer Type: Member or Normal.
 Gender: Male/Female.
@@ -15,7 +15,7 @@ Tax/Total: 5% tax and total price (including tax).
 Date/Time: Transaction timestamp (Jan–Mar 2019).
 Payment: Cash, Credit Card, or E-Wallet.
 COGS & Gross Income: Cost of goods sold and income.
-Rating: Customer experience score (1–10).
+Rating: Customer experience score (1–10). </ul>
 
 ## Use Cases
 Customer Insights: Explore buying behavior by gender or membership.
