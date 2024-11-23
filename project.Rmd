@@ -5,7 +5,7 @@ output:
     advertise: FALSE
     session_info: TRUE
     style: TRUE
-    comment: "#;-)"
+    comment: "To projekt Aleksandry Jaworskiej, Gabrieli Kuczyńksiej i Martyny Stalmach)"
     tidyverse_quiet: FALSE
     std_out_err: TRUE
 knit: reprex::reprex_render
