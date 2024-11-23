@@ -20,9 +20,11 @@ This dataset contains three months of sales data from three Biedronka supermarke
 </ul>
 
 ## Use Cases
-Customer Insights: Explore buying behavior by gender or membership.
-Branch Performance: Compare sales and product demand across locations.
-Peak Shopping Times: Identify high-traffic hours/days.
-Satisfaction Analysis: Analyze factors affecting customer ratings.
+<ul> 
+<li> Customer Insights: Explore buying behavior by gender or membership. </li>
+<li> Branch Performance: Compare sales and product demand across locations. </li>
+<li> Peak Shopping Times: Identify high-traffic hours/days. </li>
+<li> Satisfaction Analysis: Analyze factors affecting customer ratings. </li>
+</ul>
 
 ## Split of work 
