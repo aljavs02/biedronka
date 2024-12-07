@@ -12,15 +12,19 @@ editor_options:
     wrap: 72
 ---
 
-# Wstęp 
+# Wstęp
 
-## Opis problemu 
+## Opis problemu
 
-Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego. 
+Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w
+supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę
+satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
 
-## Baza danych 
+## Baza danych
 
-Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z jednej z historycznych sprzedaży firm supermarketów, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące. 
+Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z
+jednej z historycznych sprzedaży firm supermarketów, która została
+zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -35,7 +39,6 @@ library(dlookr)
 
 ```
 
-
 ```{r}
 
 # wczytanie danych 
@@ -46,7 +49,68 @@ super <- read.csv("supermarket_new.csv")
 
 ```{r, echo=FALSE}
 
+# wyświetlenie pierwszych 6 wierszy ze zbioru danych
 knitr::kable(head(super))
 
 ```
 
+# Zmienne
+
+Zbiór danych supermarket_new zawiera następujące zmienne:
+
+| Zmienna | Opis |
+|--------------------------|:-----------------------------------------------------|
+| **Invoice id** | Numer identyfikacyjny faktury sprzedaży (unikalna wartość) |
+| **Branch** | Oddział supercentrum (3 oddziały oznaczone literami A, B, C). |
+| **City** | Lokalizacja supercentrów |
+| **Customer type** | Typ klienta (z kartą członkowską lub bez) |
+| **Gender** | Płeć klienta |
+| **Product line** | Ogólne grupy kategoryzacji przedmiotów |
+| **Unit price** | Cena każdego produktu w \$ |
+| **Quantity** | Liczba produktów zakupionych przez klienta |
+| **Tax** | Opłata podatkowa w wysokości 5% dla klienta dokonującego zakupu |
+| **Total** | Cena całkowita z podatkiem |
+| **Date** | Data zakupu (rekord dostępny od 01.2019 do 03.2019) |
+| **Time** | Czas zakupu (od 10:00 do 21:00) |
+| **Payment** | Płatność wykorzystana przez klienta do zakupu (gotówka, karta kredytowa lub portfel elektroniczny) |
+| **COGS** | Koszt sprzedanych towarów |
+| **Gross margin percentage** | Procentowa marża brutto |
+| **Gross income** | Dochód brutto |
+| **Rating** | Ocena stratyfikacji klientów (w skali od 1 do 10) |
+
+```{r}
+
+# struktura danych
+str(super)
+```
+
+Funkcja *str* pozwala na określenie struktury analizowanych danych. Dzięki niej
+można określić typ analizowanych danych, całkowitą ich ilość (1000) i ilość
+zmiennych (17)
+
+```{r}
+# statystyki podsumowujące
+summary(super)
+
+```
+
+Dzięki funkcji *summary* można zauważyć, iż rekordy nie są kompletne i niezbędne
+będzie przeprowadzenie ich czyszczenia co zostanie wykonane w dalszej części
+projektu. Dodatkowo kod ten genruje wyniki minimalnych, maksymalnych i średnich
+wartości zmiennych przyjmujących typ numeryczny i liczb całkowitych oraz określa
+wartości mediany, 1. oraz 3. kwartla.
+
+Dzięki powyższym wynikom można zauważyć poniższe zależności:
+
+-   średnia ocena sklepu wynosi 7 punktów, natomiast żaden z klientów nie
+    wystawił oceny niższej niż 4 
+-   najdroższy zakup dokonany w tym sklepie w okresie od stycznia 2019 do marca
+    2019 wynosiło 1042.7\$\
+-   średnio klienci w tych oddziałach dokonywali zakupów na kwotę 323\$\
+-   mediana niższa od średniej (253.8\$ \< 323\$) może wskazywać na
+    prawoskośność rozkładu oraz na dużą liczbę wartości odstających 
+
+Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo omówione w
+dalszej części analizy.
+
+# 1. Data Cleansing & Data Wrangling 
