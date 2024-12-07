@@ -162,5 +162,5 @@ biedra$Rating <- biedra_Rating
 biedra$gross.income <- biedra_gross_income
 biedra$City <- biedra_City_hd
 #Dane zostały uzupełnione poprzez algorytm deck a oraz metodą knn
-
 ```
+Narazie suche kodziki , będą opisywane.
