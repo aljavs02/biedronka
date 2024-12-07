@@ -1,83 +1,52 @@
 ---
+title: "Supermarket"
+subtitle: "Analiza czynników istotnie wpływających na satysfakcje klienta"
+author: "A. Jaworska, G. Kuczyńska, M. Stalmach"
 output:
-  reprex::reprex_document:
-    venue: "gh"
-    advertise: FALSE
-    session_info: TRUE
-    style: TRUE
-    comment: "To projekt Aleksandry Jaworskiej, Gabrieli Kuczyńksiej i Martyny Stalmach)"
-    tidyverse_quiet: FALSE
-    std_out_err: TRUE
-knit: reprex::reprex_render
+  rmdformats::readthedown:
+    highlight: kate
+    toc_float: true
+    toc_depth: 4
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-This template demonstrates many of the bells and whistles of the `reprex::reprex_document()` output format. The YAML sets many options to non-default values, such as using `#;-)` as the comment in front of output.
+# Wstęp 
 
-## Code style
+## Opis problemu 
 
-Since `style` is `TRUE`, this difficult-to-read code (look at the `.Rmd` source file) will be restyled according to the Tidyverse style guide when it's rendered. Whitespace rationing is not in effect!
+Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego. 
+
+## Baza danych 
+
+Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z jednej z historycznych sprzedaży firm supermarketów, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące. 
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999, digits=6) 
+
+# załadowanie potrzebnych bibliotek
+library(dplyr) 
+library(ggplot2)
+library(VIM)
+library(dlookr)
+
+```
+
 
 ```{r}
-x=1;y=2;z=x+y;z
+
+# wczytanie danych 
+library(readr) 
+super <- read.csv("supermarket_new.csv")
+
 ```
 
-## Quiet tidyverse
+```{r, echo=FALSE}
 
-The tidyverse meta-package is quite chatty at startup, which can be very useful in exploratory, interactive work. It is often less useful in a reprex, so by default, we suppress this.
+knitr::kable(head(super))
 
-However, when `tidyverse_quiet` is `FALSE`, the rendered result will include a tidyverse startup message about package versions and function masking.
-
-```{r, eval = requireNamespace("tidyverse", quietly = TRUE)}
-library(tidyverse)
 ```
 
-## Chunks in languages other than R
-
-Remember: knitr supports many other languages than R, so you can reprex bits of code in Python, Ruby, Julia, C++, SQL, and more. Note that, in many cases, this still requires that you have the relevant external interpreter installed.
-
-Let's try Python!
-
-```{python, eval = Sys.which("python") != "", python.reticulate = requireNamespace("reticulate", quietly = TRUE)}
-x = 'hello, python world!'
-print(x.split(' '))
-```
-
-And bash!
-
-```{bash, eval = Sys.which("bash") != ""}
-echo "Hello Bash!";
-pwd;
-ls | head;
-```
-
-Write a function in C++, use Rcpp to wrap it and ...
-
-```{Rcpp, eval = requireNamespace("Rcpp", quietly = TRUE)}
-#include <Rcpp.h>
-using namespace Rcpp;
-
-// [[Rcpp::export]]
-NumericVector timesTwo(NumericVector x) {
-  return x * 2;
-}
-```
-
-then immediately call your C++ function from R!
-
-```{r, eval = requireNamespace("Rcpp", quietly = TRUE)}
-timesTwo(1:4)
-```
-
-## Standard output and error
-
-Some output that you see in an interactive session is not actually captured by rmarkdown, when that same code is executed in the context of an `.Rmd` document. When `std_out_err` is `TRUE`, `reprex::reprex_render()` uses a feature of `callr:r()` to capture such output and then injects it into the rendered result.
-
-Look for this output in a special section of the rendered document (and notice that it does not appear right here).
-
-```{r}
-system2("echo", args = "Output that would normally be lost")
-```
-
-## Session info
-
-Because `session_info` is `TRUE`, the rendered result includes session info, even though no such code is included here in the source document. 
