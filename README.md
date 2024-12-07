@@ -1,4 +1,4 @@
-# Biedronka Supermarket
+# Biedronka Supermarket the best
 
 ## Overview
 This dataset contains three months of sales data from three Biedronka supermarket branches, including transaction details, customer demographics, product information, and feedback ratings. It’s ideal for analyzing customer behavior, branch performance, and satisfaction trends. Dataset is used in data analysis classes project by Aleksandra Jaworska, Martyna Stalmach, Gabriela Kuczyńska in November 2024
