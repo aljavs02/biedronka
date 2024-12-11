@@ -37,6 +37,7 @@ library(dplyr)
 library(ggplot2)
 library(VIM)
 library(dlookr)
+library(naniar)
 
 ```
 
@@ -115,8 +116,8 @@ Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
 omówione w dalszej części analizy.
 
 # 1. Data Cleansing & Data Wrangling
+Na początek sprawdzenie liczby wystąpień ,NA'
 ```{r}
-library(naniar)
 biedra <- read.csv(file="supermarket_new.csv")
 sum(is.na(biedra$City)==TRUE)
 sum(is.na(biedra$Rating)==TRUE)
