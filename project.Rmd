@@ -117,10 +117,10 @@ Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
 omówione w dalszej części analizy.
 
 # 1. Data Cleansing & Data Wrangling
-# Wprowadzenie:
-# Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". 
-# W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. 
-# Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
+Wprowadzenie:
+Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". 
+W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. 
+Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 ```{r}
 
 # 1. Wczytanie danych
@@ -179,5 +179,5 @@ biedra$City <- biedra_City_hd  # Przypisanie oczyszczonej kolumny City do zbioru
 
 ```
 # Zakończenie:
-# Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
-# Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
+Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
+Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
