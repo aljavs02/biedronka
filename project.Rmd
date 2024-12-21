@@ -263,7 +263,7 @@ Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczyte
 Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
 ```{r}
-# Wykres gęstości ocen klientów względem metody płatności
+# Wykres gęstości ocen klientów względem wybranej metody płatności
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
