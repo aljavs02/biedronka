@@ -216,7 +216,7 @@ biedra$Rating <- biedra_Rating
 biedra$gross.income <- biedra_gross_income  
 biedra$City <- biedra_City_hd  
 ```
-W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach metodą KNN. Jako pierwsze:
+W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach metodą KNN. Kolejno:
 - imputacja braków metodą K-Nearest Neighbours
 - przypisanie wartości imputowanych dla gross.income
 - przypisane wartości imputowanych dla Rating
