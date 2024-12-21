@@ -174,18 +174,6 @@ super$Rating <- super_Rating  # Zastąpienie oryginalnej kolumny Rating imputowa
 super$gross.income <- super_gross_income  # Zastąpienie oryginalnej kolumny gross.income imputowaną wersją.
 super$City <- super_City_hd  # Przypisanie oczyszczonej kolumny City do zbioru danych.
 
-dane_unikalne <- unique(super)
-
-# Sprawdzenie, czy oryginalne dane zawierają duplikaty
-czy_duplikaty <- anyDuplicated(super) > 0
-
-# Wyświetlenie informacji o duplikatach
-if (czy_duplikaty) {
-  print("Dane zawierają duplikaty.")
-} else {
-  print("Brak duplikatów w danych.")
-}
-
 ```
 # Zakończenie:
 Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
