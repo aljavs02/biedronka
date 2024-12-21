@@ -32,7 +32,7 @@ została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 knitr::opts_chunk$set(echo = TRUE)
 options(scipen = 999, digits=6) 
 
-# załadowanie potrzebnych bibliotek
+# Załadowanie potrzebnych bibliotek
 library(dplyr) 
 library(ggplot2)
 library(VIM)
@@ -44,7 +44,7 @@ library(VIM)
 
 ```{r}
 
-# wczytanie danych 
+# Wczytanie danych 
 library(readr) 
 super <- read.csv("supermarket_new.csv")
 
@@ -52,7 +52,7 @@ super <- read.csv("supermarket_new.csv")
 
 ```{r, echo=FALSE}
 
-# wyświetlenie pierwszych 6 wierszy ze zbioru danych
+# Wyświetlenie pierwszych 6 wierszy ze zbioru danych
 knitr::kable(head(super))
 
 ```
@@ -83,7 +83,7 @@ Zbiór danych supermarket_new zawiera następujące zmienne:
 
 ```{r}
 
-# struktura danych
+# Struktura danych
 str(super)
 ```
 
@@ -92,7 +92,7 @@ Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
 (1000) i ilość zmiennych (17)
 
 ```{r}
-# statystyki podsumowujące
+# Statystyki podsumowujące
 summary(super)
 
 ```
@@ -123,6 +123,7 @@ W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących war
 Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 ```{r}
 
+<<<<<<< HEAD
 # 1. Wczytanie danych
 biedra <- read.csv(file="supermarket_new.csv")
 ```
@@ -135,6 +136,13 @@ sum(is.na(biedra$Rating)==TRUE)
 sum(is.na(biedra$gross.income)==TRUE)
 ```
 Następnie została:
+=======
+# Sprawdzenie brakujących danych
+sum(is.na(super$City)==TRUE)  # Liczba braków w kolumnie City.
+sum(is.na(super$Rating)==TRUE)  # Liczba braków w kolumnie Rating.
+sum(is.na(super$gross.income)==TRUE)  # Liczba braków w kolumnie gross.income.
+# Wynik: Braki w kolumnach - Rating (150), City (100), gross.income (150).
+>>>>>>> d35dc9f2a3a36e7631baf57e692c07e059ce1394
 
 - sprawdzona liczba braków w kolumnie City
 - sprawdzona liczba braków w kolumnie Rating
@@ -145,6 +153,7 @@ Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.inco
 
 ```{r}
 # Dalsza analiza braków w zbiorze
+<<<<<<< HEAD
 n_miss(biedra) 
 prop_miss(biedra) 
 miss_var_summary(biedra)
@@ -180,6 +189,26 @@ tabela częstości dla nowej kolumny Sex.
 
 ```{r}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
+=======
+n_miss(super)  # Liczba wszystkich braków w zbiorze.
+prop_miss(super)  # Procent braków w stosunku do całego zbioru danych.
+miss_var_summary(super)  # Podsumowanie braków dla poszczególnych kolumn.
+vis_miss(super)  # Wizualizacja braków w danych.
+gg_miss_fct(super, fct = Gender)  # Analiza braków w kontekście kolumny Gender.
+gg_miss_upset(super)  # Wizualizacja współwystępowania braków w różnych kolumnach.
+
+# Eksploracja danych
+table(super$Gender)  # Tabela częstości dla kolumny Gender.
+table(super$Rating)  # Tabela częstości dla kolumny Rating.
+unique(super$Rating)  # Wyświetlenie unikalnych wartości w kolumnie Rating.
+boxplot(super$Rating, outliers="red")  # Wykres pudełkowy dla Rating z zaznaczeniem wartości odstających.
+
+# Przekształcenia danych
+super$Sex <- factor(super$Gender)  # Konwersja kolumny Gender na zmienną kategoryczną jako Sex.
+table(super$Sex)  # Tabela częstości dla nowej kolumny Sex.
+
+# Imputacja brakujących danych w City (metoda sekwencyjna)
+>>>>>>> d35dc9f2a3a36e7631baf57e692c07e059ce1394
 seqImpute <- function(x, last=max(x, na.rm=TRUE)) {  
   n <- length(x)  
   x <- c(x, last)  
@@ -191,11 +220,27 @@ seqImpute <- function(x, last=max(x, na.rm=TRUE)) {
   x[1:n] 
 }
 
+<<<<<<< HEAD
 o <- order(biedra$Branch) 
 biedra_City <- biedra$City[o] 
 biedra_City_hd <- seqImpute(biedra_City)  
 table(biedra_City_hd) 
 table(biedra$City) 
+=======
+o <- order(super$Branch)  # Sortowanie kolumny City według Branch.
+super_City <- super$City[o]  # Posortowanie danych w kolumnie City.
+super_City_hd <- seqImpute(super_City)  # Uzupełnienie braków w City za pomocą funkcji seqImpute.
+table(super_City_hd)  # Podsumowanie nowej kolumny City.
+table(super$City)  # Podsumowanie oryginalnej kolumny City.
+
+# Imputacja braków w pozostałych kolumnach metodą KNN
+super_knn <- kNN(super)  # Imputacja braków metodą K-Nearest Neighbors.
+super_gross_income <- super_knn$gross.income  # Przypisanie wartości imputowanych dla gross.income.
+super_Rating <- super_knn$Rating  # Przypisanie wartości imputowanych dla Rating.
+super$Rating <- super_Rating  # Zastąpienie oryginalnej kolumny Rating imputowaną wersją.
+super$gross.income <- super_gross_income  # Zastąpienie oryginalnej kolumny gross.income imputowaną wersją.
+super$City <- super_City_hd  # Przypisanie oczyszczonej kolumny City do zbioru danych.
+>>>>>>> d35dc9f2a3a36e7631baf57e692c07e059ce1394
 
 ```
 W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi
