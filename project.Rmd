@@ -222,7 +222,3 @@ W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach me
 - przypisane wartości imputowanych dla Rating
 - zastąpienie oryginalnej kolumny Rating imutowaną wersją
 - zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
-
-# Zakończenie:
-Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
-Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
