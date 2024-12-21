@@ -124,60 +124,106 @@ Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji da
 ```{r}
 
 # 1. Wczytanie danych
-biedra <- read.csv(file="supermarket_new.csv")  # Wczytanie danych z pliku CSV do ramki danych biedra.
+biedra <- read.csv(file="supermarket_new.csv")
+```
+W powyższym kroku dane zostały wczytane z pliku CSV do ramki ,biedra'
 
+```{r}
 # 2. Sprawdzenie brakujących danych
-sum(is.na(biedra$City)==TRUE)  # Liczba braków w kolumnie City.
-sum(is.na(biedra$Rating)==TRUE)  # Liczba braków w kolumnie Rating.
-sum(is.na(biedra$gross.income)==TRUE)  # Liczba braków w kolumnie gross.income.
-# Wynik: Braki w kolumnach - Rating (150), City (100), gross.income (150).
+sum(is.na(biedra$City)==TRUE)
+sum(is.na(biedra$Rating)==TRUE)
+sum(is.na(biedra$gross.income)==TRUE)
+```
+Następnie została:
 
+- sprawdzona liczba braków w kolumnie City
+- sprawdzona liczba braków w kolumnie Rating
+- sprawdzona liczba braków w kolumnie gross.income
+
+Wynik: 
+Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150).
+
+```{r}
 # Dalsza analiza braków w zbiorze
-n_miss(biedra)  # Liczba wszystkich braków w zbiorze.
-prop_miss(biedra)  # Procent braków w stosunku do całego zbioru danych.
-miss_var_summary(biedra)  # Podsumowanie braków dla poszczególnych kolumn.
-vis_miss(biedra)  # Wizualizacja braków w danych.
-gg_miss_fct(biedra, fct = Gender)  # Analiza braków w kontekście kolumny Gender.
-gg_miss_upset(biedra)  # Wizualizacja współwystępowania braków w różnych kolumnach.
+n_miss(biedra) 
+prop_miss(biedra) 
+miss_var_summary(biedra)
+vis_miss(biedra)
+gg_miss_fct(biedra, fct = Gender)  
+gg_miss_upset(biedra) 
+```
+W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym wyznaczenie:
+- liczby wszystkich braków w zbiorze
+- procentu braków w staosunku do całego zbioru danych 
+- podsumowania braków dla poszczególnych kolumn
+- wizualizacji braków w danych 
+- analizy braków w kontekście kolumny Gender
+- wizualizacji współwystępowania braków w różnych kolumnach
 
+```{r}
 # 3. Eksploracja danych
-table(biedra$Gender)  # Tabela częstości dla kolumny Gender.
-table(biedra$Rating)  # Tabela częstości dla kolumny Rating.
-unique(biedra$Rating)  # Wyświetlenie unikalnych wartości w kolumnie Rating.
-boxplot(biedra$Rating, outliers="red")  # Wykres pudełkowy dla Rating z zaznaczeniem wartości odstających.
+table(biedra$Gender)
+table(biedra$Rating)  
+unique(biedra$Rating)  
+boxplot(biedra$Rating, outliers="red")  
+```
+Kolejno została podjęta eksploracja danych. Została wyznaczona tabela częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne wartości w kolumnie rating oraz 
+został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
 
+```{r}
 # 4. Przekształcenia danych
-biedra$Sex <- factor(biedra$Gender)  # Konwersja kolumny Gender na zmienną kategoryczną jako Sex.
-table(biedra$Sex)  # Tabela częstości dla nowej kolumny Sex.
+biedra$Sex <- factor(biedra$Gender)
+table(biedra$Sex) 
+```
+Została dokonana konwersja kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona
+tabela częstości dla nowej kolumny Sex.
 
+```{r}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
 seqImpute <- function(x, last=max(x, na.rm=TRUE)) {  
-  # Funkcja uzupełnia braki w danych, zastępując je kolejnymi dostępnymi wartościami.
   n <- length(x)  
-  x <- c(x, last)  # Dodanie wartości zapasowej na końcu.
-  i <- is.na(x)  # Identyfikacja braków w wektorze.
+  x <- c(x, last)  
+  i <- is.na(x)  
   while (any(i)) {  
-    x[i] <- x[which(i)+1]  # Zastąpienie braków kolejnymi wartościami.
-    i <- is.na(x)  # Aktualizacja indeksów braków.
+    x[i] <- x[which(i)+1]  
+    i <- is.na(x) 
   }
-  x[1:n]  # Zwrot oryginalnej długości wektora.
+  x[1:n] 
 }
 
-o <- order(biedra$Branch)  # Sortowanie kolumny City według Branch.
-biedra_City <- biedra$City[o]  # Posortowanie danych w kolumnie City.
-biedra_City_hd <- seqImpute(biedra_City)  # Uzupełnienie braków w City za pomocą funkcji seqImpute.
-table(biedra_City_hd)  # Podsumowanie nowej kolumny City.
-table(biedra$City)  # Podsumowanie oryginalnej kolumny City.
-
-# 6. Imputacja braków w pozostałych kolumnach metodą KNN
-biedra_knn <- kNN(biedra)  # Imputacja braków metodą K-Nearest Neighbors.
-biedra_gross_income <- biedra_knn$gross.income  # Przypisanie wartości imputowanych dla gross.income.
-biedra_Rating <- biedra_knn$Rating  # Przypisanie wartości imputowanych dla Rating.
-biedra$Rating <- biedra_Rating  # Zastąpienie oryginalnej kolumny Rating imputowaną wersją.
-biedra$gross.income <- biedra_gross_income  # Zastąpienie oryginalnej kolumny gross.income imputowaną wersją.
-biedra$City <- biedra_City_hd  # Przypisanie oczyszczonej kolumny City do zbioru danych.
+o <- order(biedra$Branch) 
+biedra_City <- biedra$City[o] 
+biedra_City_hd <- seqImpute(biedra_City)  
+table(biedra_City_hd) 
+table(biedra$City) 
 
 ```
+W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi
+wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze.
+Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno:
+- zwrot oryginalnej długości wektora
+- sortowanie kolumny City według Branch
+- posortowanie danych w kolumnie City 
+- uzupełnienie braków w City za pomocą funkcji segImpute
+- podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
+
+
+```{r}
+# 6. Imputacja braków w pozostałych kolumnach metodą KNN
+biedra_knn <- kNN(biedra)  
+biedra_gross_income <- biedra_knn$gross.income  
+biedra_Rating <- biedra_knn$Rating  
+biedra$Rating <- biedra_Rating  
+biedra$gross.income <- biedra_gross_income  
+biedra$City <- biedra_City_hd  
+```
+W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach metodą KNN. Jako pierwsze:
+- imputacja braków metodą K-Nearest Neighbours
+- przypisanie wartości imputowanych dla gross.income
+- przypisane wartości imputowanych dla Rating
+- zastąpienie oryginalnej kolumny Rating imutowaną wersją
+- zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
+
 # Zakończenie:
 Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
 Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
