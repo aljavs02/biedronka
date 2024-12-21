@@ -175,6 +175,113 @@ super$gross.income <- super_gross_income  # Zastąpienie oryginalnej kolumny gro
 super$City <- super_City_hd  # Przypisanie oczyszczonej kolumny City do zbioru danych.
 
 ```
-# Zakończenie:
+
 Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
 Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
+
+# Wizualizacje 
+
+W tej części zajmiemy się opracowaniem wizualizacji analizowanych danych. 
+
+## wizualizacja gęstości ocen względem zmiennych 
+
+Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ klienta czy metoda płatności. Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkładają się w zależności od wybranych zmiennych.
+
+Wykres gęstości ilustruje rozkład zmiennej na osi numerycznej, gdzie wyższe wartości wskazują na obszary większego zagęszczenia. Obszary te oznaczają większą liczbę obserwacji dla danych wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
+
+
+```{r}
+# Wykres gęstości ocen klientów względem filii sklepu
+ggplot(super, aes(x = Rating, fill = factor(Branch))) +
+  geom_density(alpha = 0.6, color = NA) +  
+  labs(
+    title = "Gęstość ocen klientów względem filii sklepu",
+    x = "Ocena klientów",
+    y = "Gęstość",
+    fill = "Filia") +
+  theme_minimal(base_size = 14) +  
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    legend.position = "top", 
+    legend.title = element_text(size = 12),  
+    legend.text = element_text(size = 10))   
+```
+**Obserwacje**
+
+Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje doświadczenie zakupowe w tym zakresie.
+
+Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii.
+
+Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
+
+```{r}
+# Wykres gęstości ocen klientów względem płci
+ggplot(super, aes(x = Rating, fill = factor(Sex))) +
+  geom_density(alpha = 0.5, color = NA) +  
+  scale_fill_manual(values = c("darkorchid", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
+  labs(
+    title = "Gęstość ocen klientów względem płci",
+    x = "Ocena klientów",
+    y = "Gęstość",
+    fill = "Płeć") +
+  theme_minimal(base_size = 14) +  
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    legend.position = "top", 
+    legend.title = element_text(size = 12),  
+    legend.text = element_text(size = 10))   
+```
+**Obserwacje**
+
+Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre".
+
+Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
+
+```{r}
+# Wykres gęstości ocen klientów względem typu klienta
+ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
+  geom_density(alpha = 0.6, color = NA) +  
+  scale_fill_manual(values = c("blue", "green"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
+  labs(
+    title = "Gęstość ocen klientów względem typu klienta",
+    x = "Ocena klientów",
+    y = "Gęstość",
+    fill = "Typ klienta") +
+  theme_minimal(base_size = 14) +  
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    legend.position = "top", 
+    legend.title = element_text(size = 12),  
+    legend.text = element_text(size = 10))   
+```
+**Obserwacje**
+
+Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty (kolor zielony) również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony.
+
+Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7.
+
+Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
+
+```{r}
+# Wykres gęstości ocen klientów względem metody płatności
+ggplot(super, aes(x = Rating, fill = factor(Payment))) +
+  geom_density(alpha = 0.6, color = NA) +  
+  scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
+  labs(
+    title = "Gęstość ocen klientów względem metody płatności",
+    x = "Ocena klientów",
+    y = "Gęstość",
+    fill = "Metoda płatności") +
+  theme_minimal(base_size = 14) +  
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    legend.position = "top", 
+    legend.title = element_text(size = 12),  
+    legend.text = element_text(size = 10))   
+```
+**Obserwacje**
+
+Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. 
+
+Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości 
+
