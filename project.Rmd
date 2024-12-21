@@ -16,15 +16,16 @@ editor_options:
 
 ## Opis problemu
 
-Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w
-supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę
-satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
+Celem projektu jest eksploatacja historycznych danych dotyczących
+sprzedaży w supermarketach oraz identyfikacja czynników mogących
+istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego
+doświadczenia zakupowego.
 
 ## Baza danych
 
-Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z
-jednej z historycznych sprzedaży firm supermarketów, która została
-zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
+Podstawą analizy był zbiór danych supermarket_new, zawierający dane
+pochodzące z jednej z historycznych sprzedaży firm supermarketów, która
+została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -36,7 +37,9 @@ library(dplyr)
 library(ggplot2)
 library(VIM)
 library(dlookr)
-
+library(naniar)
+library(validate)
+library(VIM)
 ```
 
 ```{r}
@@ -59,7 +62,7 @@ knitr::kable(head(super))
 Zbiór danych supermarket_new zawiera następujące zmienne:
 
 | Zmienna | Opis |
-|--------------------------|:-----------------------------------------------------|
+|------------------------|:-----------------------------------------------|
 | **Invoice id** | Numer identyfikacyjny faktury sprzedaży (unikalna wartość) |
 | **Branch** | Oddział supercentrum (3 oddziały oznaczone literami A, B, C). |
 | **City** | Lokalizacja supercentrów |
@@ -84,9 +87,9 @@ Zbiór danych supermarket_new zawiera następujące zmienne:
 str(super)
 ```
 
-Funkcja *str* pozwala na określenie struktury analizowanych danych. Dzięki niej
-można określić typ analizowanych danych, całkowitą ich ilość (1000) i ilość
-zmiennych (17)
+Funkcja *str* pozwala na określenie struktury analizowanych danych.
+Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
+(1000) i ilość zmiennych (17)
 
 ```{r}
 # statystyki podsumowujące
@@ -94,23 +97,132 @@ summary(super)
 
 ```
 
-Dzięki funkcji *summary* można zauważyć, iż rekordy nie są kompletne i niezbędne
-będzie przeprowadzenie ich czyszczenia co zostanie wykonane w dalszej części
-projektu. Dodatkowo kod ten genruje wyniki minimalnych, maksymalnych i średnich
-wartości zmiennych przyjmujących typ numeryczny i liczb całkowitych oraz określa
-wartości mediany, 1. oraz 3. kwartla.
+Dzięki funkcji *summary* można zauważyć, iż rekordy nie są kompletne i
+niezbędne będzie przeprowadzenie ich czyszczenia co zostanie wykonane w
+dalszej części projektu. Dodatkowo kod ten genruje wyniki minimalnych,
+maksymalnych i średnich wartości zmiennych przyjmujących typ numeryczny
+i liczb całkowitych oraz określa wartości mediany, 1. oraz 3. kwartla.
 
 Dzięki powyższym wynikom można zauważyć poniższe zależności:
 
--   średnia ocena sklepu wynosi 7 punktów, natomiast żaden z klientów nie
-    wystawił oceny niższej niż 4 
--   najdroższy zakup dokonany w tym sklepie w okresie od stycznia 2019 do marca
-    2019 wynosiło 1042.7\$\
+-   średnia ocena sklepu wynosi 7 punktów, natomiast żaden z klientów
+    nie wystawił oceny niższej niż 4 
+-   najdroższy zakup dokonany w tym sklepie w okresie od stycznia 2019
+    do marca 2019 wynosiło 1042.7\$\
 -   średnio klienci w tych oddziałach dokonywali zakupów na kwotę 323\$\
 -   mediana niższa od średniej (253.8\$ \< 323\$) może wskazywać na
     prawoskośność rozkładu oraz na dużą liczbę wartości odstających 
 
-Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo omówione w
-dalszej części analizy.
+Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
+omówione w dalszej części analizy.
 
-# Data Cleansing & Data Wrangling 
+# 1. Data Cleansing & Data Wrangling
+Wprowadzenie:
+Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". 
+W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. 
+Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
+```{r}
+
+# 1. Wczytanie danych
+biedra <- read.csv(file="supermarket_new.csv")
+```
+W powyższym kroku dane zostały wczytane z pliku CSV do ramki ,biedra'
+
+```{r}
+# 2. Sprawdzenie brakujących danych
+sum(is.na(biedra$City)==TRUE)
+sum(is.na(biedra$Rating)==TRUE)
+sum(is.na(biedra$gross.income)==TRUE)
+```
+Następnie została:
+
+- sprawdzona liczba braków w kolumnie City
+- sprawdzona liczba braków w kolumnie Rating
+- sprawdzona liczba braków w kolumnie gross.income
+
+Wynik: 
+Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150).
+
+```{r}
+# Dalsza analiza braków w zbiorze
+n_miss(biedra) 
+prop_miss(biedra) 
+miss_var_summary(biedra)
+vis_miss(biedra)
+gg_miss_fct(biedra, fct = Gender)  
+gg_miss_upset(biedra) 
+```
+W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym wyznaczenie:
+- liczby wszystkich braków w zbiorze
+- procentu braków w staosunku do całego zbioru danych 
+- podsumowania braków dla poszczególnych kolumn
+- wizualizacji braków w danych 
+- analizy braków w kontekście kolumny Gender
+- wizualizacji współwystępowania braków w różnych kolumnach
+
+```{r}
+# 3. Eksploracja danych
+table(biedra$Gender)
+table(biedra$Rating)  
+unique(biedra$Rating)  
+boxplot(biedra$Rating, outliers="red")  
+```
+Kolejno została podjęta eksploracja danych. Została wyznaczona tabela częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne wartości w kolumnie rating oraz 
+został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
+
+```{r}
+# 4. Przekształcenia danych
+biedra$Sex <- factor(biedra$Gender)
+table(biedra$Sex) 
+```
+Została dokonana konwersja kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona
+tabela częstości dla nowej kolumny Sex.
+
+```{r}
+# 5. Imputacja brakujących danych w City (metoda sekwencyjna)
+seqImpute <- function(x, last=max(x, na.rm=TRUE)) {  
+  n <- length(x)  
+  x <- c(x, last)  
+  i <- is.na(x)  
+  while (any(i)) {  
+    x[i] <- x[which(i)+1]  
+    i <- is.na(x) 
+  }
+  x[1:n] 
+}
+
+o <- order(biedra$Branch) 
+biedra_City <- biedra$City[o] 
+biedra_City_hd <- seqImpute(biedra_City)  
+table(biedra_City_hd) 
+table(biedra$City) 
+```
+W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi
+wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze.
+Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno:
+- zwrot oryginalnej długości wektora
+- sortowanie kolumny City według Branch
+- posortowanie danych w kolumnie City 
+- uzupełnienie braków w City za pomocą funkcji segImpute
+- podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
+
+
+```{r}
+# 6. Imputacja braków w pozostałych kolumnach metodą KNN
+biedra_knn <- kNN(biedra)  
+biedra_gross_income <- biedra_knn$gross.income  
+biedra_Rating <- biedra_knn$Rating  
+biedra$Rating <- biedra_Rating  
+biedra$gross.income <- biedra_gross_income  
+biedra$City <- biedra_City_hd  
+```
+W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach metodą KNN. Kolejno:
+- imputacja braków metodą K-Nearest Neighbours
+- przypisanie wartości imputowanych dla gross.income
+- przypisane wartości imputowanych dla Rating
+- zastąpienie oryginalnej kolumny Rating imutowaną wersją
+- zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
+
+# Zakończenie:
+Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
+Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
