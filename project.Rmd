@@ -34,19 +34,19 @@ options(scipen = 999, digits=6)
 
 # załadowanie potrzebnych bibliotek
 library(dplyr) 
+library(readr) 
 library(ggplot2)
 library(VIM)
 library(dlookr)
 library(naniar)
 library(validate)
-library(VIM)
 library(ggeasy)
+library(lubridate)
 ```
 
 ```{r}
 
 # wczytanie danych 
-library(readr) 
 super <- read.csv("supermarket_new.csv")
 
 ```
@@ -58,7 +58,7 @@ knitr::kable(head(super))
 
 ```
 
-# Zmienne
+## Zmienne
 
 Zbiór danych supermarket_new zawiera następujące zmienne:
 
@@ -83,14 +83,19 @@ Zbiór danych supermarket_new zawiera następujące zmienne:
 | **Rating** | Ocena stratyfikacji klientów (w skali od 1 do 10) |
 
 ```{r}
-
 # struktura danych
 str(super)
 ```
 
 Funkcja *str* pozwala na określenie struktury analizowanych danych.
 Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
-(1000) i ilość zmiennych (17)
+(1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
+
+```{r}
+# zmiana formatu zmiennej Date
+super <- super %>%
+  mutate(Date = mdy(Date))
+```
 
 ```{r}
 # statystyki podsumowujące
@@ -117,8 +122,8 @@ Dzięki powyższym wynikom można zauważyć poniższe zależności:
 Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
 omówione w dalszej części analizy.
 
-# 1. Data Cleansing & Data Wrangling
-Wprowadzenie:
+# Data Cleansing & Data Wrangling
+
 Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". 
 W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. 
 Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
@@ -222,7 +227,6 @@ W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach me
 - zastąpienie oryginalnej kolumny Rating imutowaną wersją
 - zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
 
-# Zakończenie:
 Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
 Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
 
@@ -237,8 +241,9 @@ Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkład
 Wykres gęstości ilustruje rozkład zmiennej na osi numerycznej, gdzie wyższe wartości wskazują na obszary większego zagęszczenia. O
 bszary te oznaczają większą liczbę obserwacji dla danych wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
 
+### Wykres gęstości ocen klientów względem filii sklepu
+
 ```{r}
-# Wykres gęstości ocen klientów względem filii sklepu
 ggplot(super, aes(x = Rating, fill = factor(Branch))) +
   geom_density(alpha = 0.6, color = NA) +  
   labs(
@@ -259,8 +264,9 @@ Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale
 Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii.
 Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
 
+### Wykres gęstości ocen klientów względem płci
+
 ```{r}
-# Wykres gęstości ocen klientów względem płci
 ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   geom_density(alpha = 0.5, color = NA) +  
   scale_fill_manual(values = c("darkorchid", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
@@ -282,8 +288,9 @@ Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedzial
 Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. 
 Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
 
+### Wykres gęstości ocen klientów względem typu klienta
+
 ```{r}
-# Wykres gęstości ocen klientów względem typu klienta
 ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("blue", "green"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
@@ -305,8 +312,9 @@ Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości oc
 Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7.
 Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
+### Wykres gęstości ocen klientów względem metody płatności
+
 ```{r}
-# Wykres gęstości ocen klientów względem metody płatności
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
@@ -326,7 +334,9 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
 **Obserwacje**
 Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. 
 Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
+
 ## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
+
 ```{r}
 ggplot(super, aes(x=Rating))+
   geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
@@ -335,8 +345,10 @@ ggplot(super, aes(x=Rating))+
   facet_grid(~Product.line)
 
 ```
+
 **Obserwacje**
 Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
+
 ## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
 ```{r}
 super %>% 
@@ -349,11 +361,12 @@ super %>%
   theme_bw()+
   easy_center_title() 
 ```
+
 **Obserwacje**
 Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
 
+## Wykres procentowy udziału linii produktowych w całkowitych kosztach.
 ```{r}
-# Wykres procentowy udziału linii produktowych w całkowitych kosztach.
 product_costs <- super %>%
   group_by(Product.line) %>%
   summarise(Total_COGS = sum(cogs)) %>%
@@ -371,8 +384,8 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
 **Obserwacje**
 Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
 
+## Liczba zakupionych produktów w podziale na sposób płatności.
 ```{r}
-# Liczba zakupionych produktów w podziale na sposób płatności.
 ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   geom_bar(stat = "identity") +
   labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
@@ -385,3 +398,72 @@ Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje si�
 - płacąc gotówką,
 - płacąc ewalletem
 - płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
+
+```{r}
+# 1. Obliczanie skumulowanego przychodu
+super <- super %>% 
+  group_by(Date, Branch) %>% 
+  mutate(Daily_Total_Revenue = sum(Total, na.rm = TRUE))
+
+# 2. Dodanie kolumny z miesiącem
+super <- super %>%
+  mutate(Month = month(Date))
+
+plots <- list()
+
+for (Month in months) {
+  monthly_data <- super %>%
+    filter(Month == Month)
+  
+  plot <- ggplot(monthly_data, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Branch)) +
+    geom_line(size = 1.2) +
+    labs(
+      title = paste("Dzienne zarobki dla miesiąca:", month),
+      x = "Data",
+      y = "Dzienne zarobki ($)",
+      color = "Oddział"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  plots[[as.character(month)]] <- plot
+}
+
+# Wyświetlenie wykresów
+library(gridExtra)
+grid.arrange(grobs = plots, ncol = 1)
+```
+
+```{r}
+# Obliczanie skumulowanego przychodu
+cumulative_revenue <- super %>%
+  group_by(Branch, Date) %>%
+  summarise(Daily_Total_Revenue = sum(Total, na.rm = TRUE)) %>%
+  arrange(Branch, Date) %>%
+  mutate(Cumulative_Revenue = cumsum(Daily_Total_Revenue))
+
+# Dodanie podziału na tygodnie i miesiące
+cumulative_revenue <- cumulative_revenue %>%
+  mutate(
+    Week = format(as.Date(Date), "%Y-%U"),
+    Month = format(as.Date(Date), "%Y-%m")
+  )
+View(cumulative_revenue)
+```
+
+```{r}
+weekly_revenue <- cumulative_revenue %>%
+  group_by(Branch, Week) %>%
+  summarise(Weekly_Cumulative_Revenue = max(Cumulative_Revenue))
+
+ggplot(weekly_revenue, aes(x = Week, y = Weekly_Cumulative_Revenue, color = Branch, group = Branch)) +
+  geom_line(size = 1.2) +
+  labs(
+    title = "Skumulowany przychód dla każdego oddziału (podział tygodniowy)",
+    x = "Tydzień",
+    y = "Skumulowany przychód ($)",
+    color = "Oddział"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
