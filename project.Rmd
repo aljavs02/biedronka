@@ -40,6 +40,7 @@ library(dlookr)
 library(naniar)
 library(validate)
 library(VIM)
+library(ggeasy)
 ```
 
 ```{r}
@@ -159,8 +160,11 @@ W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym wyzna
 # 3. Eksploracja danych
 table(super$Gender)
 table(super$Rating)  
-unique(super$Rating)  
-boxplot(super$Rating, outliers="red")  
+unique(super$Rating)
+ggplot(super, aes(x=Rating))+ 
+  geom_boxplot(fill="Dark Sea Green 3")+
+  coord_flip()
+  
 ```
 Kolejno została podjęta eksploracja danych. Została wyznaczona tabela częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne wartości w kolumnie rating oraz 
 został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
@@ -218,12 +222,7 @@ W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach me
 - zastąpienie oryginalnej kolumny Rating imutowaną wersją
 - zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
 
-<<<<<<< HEAD
 # Zakończenie:
-Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
-Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
-=======
-
 Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
 Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
 
@@ -326,5 +325,27 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
 
 **Obserwacje**
 Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. 
-Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości. 
+Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
+## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
+```{r}
+ggplot(super, aes(x=Rating))+
+  geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
+  labs(x="Oceny ", y="Liczba osób")+
+  theme_bw()+
+  facet_grid(~Product.line)
 
+```
+Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
+## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
+```{r}
+super %>% 
+  group_by(City) %>% 
+  summarise(Mean.Rating=mean(Rating))  %>% 
+  ggplot(aes(x=City, y=Mean.Rating))+
+  geom_col(fill="Slate Blue 1", color= 'black')+
+  geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
+  labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
+  theme_bw()+
+  easy_center_title() 
+```
+Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
