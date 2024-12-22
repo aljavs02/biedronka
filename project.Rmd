@@ -335,6 +335,7 @@ ggplot(super, aes(x=Rating))+
   facet_grid(~Product.line)
 
 ```
+**Obserwacje**
 Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
 ## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
 ```{r}
@@ -348,4 +349,41 @@ super %>%
   theme_bw()+
   easy_center_title() 
 ```
+**Obserwacje**
 Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
+
+```{r}
+# Wykres procentowy udziału linii produktowych w całkowitych kosztach.
+product_costs <- super %>%
+  group_by(Product.line) %>%
+  summarise(Total_COGS = sum(cogs)) %>%
+  mutate(Percentage = Total_COGS / sum(Total_COGS) * 100)
+
+ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), position = position_stack(vjust = 0.5)) + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+**Obserwacje**
+Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
+
+```{r}
+# Liczba zakupionych produktów w podziale na sposób płatności.
+ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
+       x = "Sposób płatności", y = "Liczba produktów (Quantity)") +
+  scale_fill_brewer(palette = "Set3") +  # Wybór palety Set3
+  theme_minimal()
+```
+**Obserwacje**
+Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje się kolejno:
+- płacąc gotówką,
+- płacąc ewalletem
+- płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
+
+
