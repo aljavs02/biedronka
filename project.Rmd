@@ -407,8 +407,10 @@ super <- super %>%
 
 # 2. Dodanie kolumny z miesiącem
 super <- super %>%
-  mutate(Month = month(Date))
+  mutate(Month = month(Date, label = TRUE, abbr = FALSE))
 
+
+months <- sort(unique(super$Month))
 plots <- list()
 
 for (Month in months) {
