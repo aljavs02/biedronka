@@ -237,8 +237,8 @@ Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkład
 Wykres gęstości ilustruje rozkład zmiennej na osi numerycznej, gdzie wyższe wartości wskazują na obszary większego zagęszczenia. O
 bszary te oznaczają większą liczbę obserwacji dla danych wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
 
+### Wykres gęstości ocen klientów względem filii sklepu
 ```{r}
-# Wykres gęstości ocen klientów względem filii sklepu
 ggplot(super, aes(x = Rating, fill = factor(Branch))) +
   geom_density(alpha = 0.6, color = NA) +  
   labs(
@@ -259,8 +259,8 @@ Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale
 Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii.
 Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
 
+### Wykres gęstości ocen klientów względem płci
 ```{r}
-# Wykres gęstości ocen klientów względem płci
 ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   geom_density(alpha = 0.5, color = NA) +  
   scale_fill_manual(values = c("darkorchid", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
@@ -282,8 +282,8 @@ Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedzial
 Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. 
 Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
 
+### Wykres gęstości ocen klientów względem typu klienta
 ```{r}
-# Wykres gęstości ocen klientów względem typu klienta
 ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("blue", "green"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
@@ -305,8 +305,8 @@ Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości oc
 Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7.
 Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
+### Wykres gęstości ocen klientów względem metody płatności
 ```{r}
-# Wykres gęstości ocen klientów względem metody płatności
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
@@ -326,3 +326,32 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
 **Obserwacje**
 Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. 
 Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości. 
+
+
+## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
+```{r}
+ggplot(super, aes(x=Rating))+
+  geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
+  labs(x="Oceny ", y="Liczba osób")+
+  theme_bw()+
+  facet_grid(~Product.line)
+
+```
+
+Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
+
+## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
+```{r}
+super %>% 
+  group_by(City) %>% 
+  summarise(Mean.Rating=mean(Rating))  %>% 
+  ggplot(aes(x=City, y=Mean.Rating))+
+  geom_col(fill="Slate Blue 1", color= 'black')+
+  geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
+  labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
+  theme_bw()+
+  easy_center_title() 
+```
+
+Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
+
