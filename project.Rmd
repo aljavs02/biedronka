@@ -385,5 +385,3 @@ Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje si�
 - płacąc gotówką,
 - płacąc ewalletem
 - płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
-
-
