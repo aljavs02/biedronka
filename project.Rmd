@@ -234,7 +234,7 @@ Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na pr
 
 W tej części zajmiemy się opracowaniem wizualizacji analizowanych danych. 
 
-## wizualizacja gęstości ocen względem zmiennych 
+## Wizualizacja gęstości ocen względem zmiennych 
 
 Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ klienta czy metoda płatności. 
 Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkładają się w zależności od wybranych zmiennych.
@@ -251,12 +251,11 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
     x = "Ocena klientów",
     y = "Gęstość",
     fill = "Filia") +
-  theme_minimal(base_size = 14) +  
+  theme_minimal(base_size = 12) +  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),  
-    legend.position = "top", 
-    legend.title = element_text(size = 12),  
-    legend.text = element_text(size = 10))   
+    legend.position = "top",
+    legend.title = element_text(size = 11))   
 ```
 
 **Obserwacje**
@@ -275,12 +274,11 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     x = "Ocena klientów",
     y = "Gęstość",
     fill = "Płeć") +
-  theme_minimal(base_size = 14) +  
+  theme_minimal(base_size = 12) +  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),  
-    legend.position = "top", 
-    legend.title = element_text(size = 12),  
-    legend.text = element_text(size = 10))   
+    legend.position = "top",
+    legend.title = element_text(size = 11))     
 ```
 
 **Obserwacje**
@@ -299,12 +297,11 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     x = "Ocena klientów",
     y = "Gęstość",
     fill = "Typ klienta") +
-  theme_minimal(base_size = 14) +  
+  theme_minimal(base_size = 12) +  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),  
-    legend.position = "top", 
-    legend.title = element_text(size = 12),  
-    legend.text = element_text(size = 10))   
+    legend.position = "top",
+    legend.title = element_text(size = 11))  
 ```
 
 **Obserwacje**
@@ -323,12 +320,11 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
     x = "Ocena klientów",
     y = "Gęstość",
     fill = "Metoda płatności") +
-  theme_minimal(base_size = 14) +  
+  theme_minimal(base_size = 12) +  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),  
-    legend.position = "top", 
-    legend.title = element_text(size = 12),  
-    legend.text = element_text(size = 10))   
+    legend.position = "top",
+    legend.title = element_text(size = 11))  
 ```
 
 **Obserwacje**
@@ -399,73 +395,57 @@ Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje si�
 - płacąc ewalletem
 - płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
 
+## Wizualizacja dziennych przychodów w oddziałach z podziałem na miesiące
+
 ```{r}
-# 1. Obliczanie skumulowanego przychodu
+# Obliczanie dziennych przychodów
 super <- super %>% 
   group_by(Date, Branch) %>% 
   mutate(Daily_Total_Revenue = sum(Total, na.rm = TRUE))
 
-# 2. Dodanie kolumny z miesiącem
+# Dodanie kolumny wyodrębniającej z daty miesiące
 super <- super %>%
-  mutate(Month = month(Date, label = TRUE, abbr = FALSE))
+  mutate(Month = month(Date, label = TRUE, abbr = FALSE)) 
 
+# Dodanie ramki danych wyliczającej maksymalne i minimalne wartości dziennego przychodu w podziale na miesiące i oddziały
+extrema <- super %>%
+  group_by(Month, Branch) %>%
+  reframe(
+    Date = c(Date[which.max(Daily_Total_Revenue)], Date[which.min(Daily_Total_Revenue)]),
+    Value = c(max(Daily_Total_Revenue, na.rm = TRUE), min(Daily_Total_Revenue, na.rm = TRUE)),
+    Type = c("Max", "Min"))
 
-months <- sort(unique(super$Month))
-plots <- list()
-
-for (Month in months) {
-  monthly_data <- super %>%
-    filter(Month == Month)
-  
-  plot <- ggplot(monthly_data, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Branch)) +
-    geom_line(size = 1.2) +
-    labs(
-      title = paste("Dzienne zarobki dla miesiąca:", month),
-      x = "Data",
-      y = "Dzienne zarobki ($)",
-      color = "Oddział"
-    ) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  
-  plots[[as.character(month)]] <- plot
-}
-
-# Wyświetlenie wykresów
-library(gridExtra)
-grid.arrange(grobs = plots, ncol = 1)
-```
-
-```{r}
-# Obliczanie skumulowanego przychodu
-cumulative_revenue <- super %>%
-  group_by(Branch, Date) %>%
-  summarise(Daily_Total_Revenue = sum(Total, na.rm = TRUE)) %>%
-  arrange(Branch, Date) %>%
-  mutate(Cumulative_Revenue = cumsum(Daily_Total_Revenue))
-
-# Dodanie podziału na tygodnie i miesiące
-cumulative_revenue <- cumulative_revenue %>%
-  mutate(
-    Week = format(as.Date(Date), "%Y-%U"),
-    Month = format(as.Date(Date), "%Y-%m")
-  )
-View(cumulative_revenue)
-```
-
-```{r}
-weekly_revenue <- cumulative_revenue %>%
-  group_by(Branch, Week) %>%
-  summarise(Weekly_Cumulative_Revenue = max(Cumulative_Revenue))
-
-ggplot(weekly_revenue, aes(x = Week, y = Weekly_Cumulative_Revenue, color = Branch, group = Branch)) +
-  geom_line(size = 1.2) +
+# Tworzenie wykresu
+ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Branch)) +
+  geom_line(size = 0.5) +
+  geom_point(
+    data = extrema,
+    aes(x = Date, y = Value, shape = Type),
+    size = 3) +
+  facet_wrap(~Month, scales = "free_x") +
+  scale_color_brewer(palette = "Set2") +
   labs(
-    title = "Skumulowany przychód dla każdego oddziału (podział tygodniowy)",
-    x = "Tydzień",
-    y = "Skumulowany przychód ($)",
-    color = "Oddział"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    title = "Dzienne przychody w oddziałach",
+    x = "Data",
+    y = "Dzienne przychody ($)",
+    color = "Oddział",
+    shape = "Ekstrema") +
+  scale_y_continuous(breaks = seq(0, 4000, by = 500)) + 
+  scale_x_date(date_labels = "%m/%d", date_breaks = "1 week") +  
+  theme_minimal(base_size = 12) + 
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  
+    plot.title = element_text(hjust = 0.5, size = 13),  
+    legend.position = "top",
+    legend.title = element_text(size = 11))
 ```
+Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi oraz maksymalnymi. 
+
+**Obserwacje**
+Spośród trzech analizowanych oddziałów, najlepiej radził sobie Oddział B, który wykazywał największą zmienność w przychodach. Sugeruje to większą dynamikę sprzedaży, a w szczytowych momentach przychody tego oddziału były najwyższe. Z kolei Oddział A radził sobie najgorzej, ze względu na największe wahania i przewagę niższych wartości, co wskazuje na mniej stabilne i niższe przychody w porównaniu do pozostałych oddziałów.
+
+Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały następująco:
+
+- Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
+- Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
+- Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części.
