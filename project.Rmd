@@ -63,7 +63,7 @@ knitr::kable(head(super))
 Zbiór danych supermarket_new zawiera następujące zmienne:
 
 | Zmienna | Opis |
-|------------------------|:-----------------------------------------------|
+|-------------------------|:-----------------------------------------------|
 | **Invoice id** | Numer identyfikacyjny faktury sprzedaży (unikalna wartość) |
 | **Branch** | Oddział supercentrum (3 oddziały oznaczone literami A, B, C). |
 | **City** | Lokalizacja supercentrów |
@@ -89,7 +89,9 @@ str(super)
 
 Funkcja *str* pozwala na określenie struktury analizowanych danych.
 Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
-(1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
+(1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date
+zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy
+użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
 
 ```{r}
 # zmiana formatu zmiennej Date
@@ -124,10 +126,12 @@ omówione w dalszej części analizy.
 
 # Data Cleansing & Data Wrangling
 
-Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". 
-W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. 
-Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
-
+Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych
+z pliku "supermarket_new.csv". W szczególności skupimy się na
+identyfikacji i uzupełnieniu brakujących wartości w kluczowych
+kolumnach: City, Rating oraz gross.income. Dzięki zastosowaniu
+odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy
+zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 
 ```{r}
 # 2. Sprawdzenie brakujących danych
@@ -135,14 +139,15 @@ sum(is.na(super$City)==TRUE)
 sum(is.na(super$Rating)==TRUE)
 sum(is.na(super$gross.income)==TRUE)
 ```
+
 Następnie została:
 
-- sprawdzona liczba braków w kolumnie City
-- sprawdzona liczba braków w kolumnie Rating
-- sprawdzona liczba braków w kolumnie gross.income
+-   sprawdzona liczba braków w kolumnie City
+-   sprawdzona liczba braków w kolumnie Rating
+-   sprawdzona liczba braków w kolumnie gross.income
 
-Wynik: 
-Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150).
+Wynik: Wyznaczono następujące braki w kolumnach: Rating (150), City
+(100), gross.income (150).
 
 ```{r}
 # Dalsza analiza braków w zbiorze
@@ -153,13 +158,13 @@ vis_miss(super)
 gg_miss_fct(super, fct = Gender)  
 gg_miss_upset(super) 
 ```
-W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym wyznaczenie:
-- liczby wszystkich braków w zbiorze
-- procentu braków w staosunku do całego zbioru danych 
-- podsumowania braków dla poszczególnych kolumn
-- wizualizacji braków w danych 
-- analizy braków w kontekście kolumny Gender
-- wizualizacji współwystępowania braków w różnych kolumnach
+
+W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym
+wyznaczenie: - liczby wszystkich braków w zbiorze - procentu braków w
+staosunku do całego zbioru danych - podsumowania braków dla
+poszczególnych kolumn - wizualizacji braków w danych - analizy braków w
+kontekście kolumny Gender - wizualizacji współwystępowania braków w
+różnych kolumnach
 
 ```{r}
 # 3. Eksploracja danych
@@ -171,16 +176,20 @@ ggplot(super, aes(x=Rating))+
   coord_flip()
   
 ```
-Kolejno została podjęta eksploracja danych. Została wyznaczona tabela częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne wartości w kolumnie rating oraz 
-został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
+
+Kolejno została podjęta eksploracja danych. Została wyznaczona tabela
+częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne
+wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla
+kolumny Rating z zaznaczeniem wartości odstających.
 
 ```{r}
 # 4. Przekształcenia danych
 super$Sex <- factor(super$Gender)
 table(super$Sex) 
 ```
-Została dokonana konwersja kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona
-tabela częstości dla nowej kolumny Sex.
+
+Została dokonana konwersja kolumny Gender na zmienną kategoryczną jako
+Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
 ```{r}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
@@ -200,46 +209,56 @@ super_City <- super$City[o]
 super_City_hd <- seqImpute(super_City)  
 table(super_City_hd) 
 table(super$City) 
+super$City <- super_City_hd 
 ```
-W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi
-wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze.
-Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno:
-- zwrot oryginalnej długości wektora
-- sortowanie kolumny City według Branch
-- posortowanie danych w kolumnie City 
-- uzupełnienie braków w City za pomocą funkcji segImpute
-- podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
 
+W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je
+kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na
+końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały
+braki kolejnymi wartościami i zostały zaktualizowane indeksy braków.
+Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City
+według Branch - posortowanie danych w kolumnie City - uzupełnienie
+braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny
+City oraz podsumowanie oryginalnej kolumny City.
 
 ```{r}
-# 6. Imputacja braków w pozostałych kolumnach metodą KNN
+# 6. Imputacja braków w kolumnie Rating metodą KNN
 super_knn <- kNN(super)  
-super_gross_income <- super_knn$gross.income  
 super_Rating <- super_knn$Rating  
 super$Rating <- super_Rating  
-super$gross.income <- super_gross_income  
-super$City <- super_City_hd  
+ 
 ```
-W ostatnim kroku została dokonana imputacja braków w pozostałych kolumnach metodą KNN. Kolejno:
-- imputacja braków metodą K-Nearest Neighbours
-- przypisanie wartości imputowanych dla gross.income
-- przypisane wartości imputowanych dla Rating
-- zastąpienie oryginalnej kolumny Rating imutowaną wersją
-- zastąpienie oryginalnej kolumny gross.income imputowaną wersją oraz przypisanie oczyszczonej kolumny City do zbioru danych
+```{r}
+# 7. Imputacja braków w kolumnie gross.income na podstawie pozostałych kolumn
+super$gross.income <- super$Total-super$cogs
+```
 
-Proces oczyszczania danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. 
-Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
+W kolejnym kroku została dokonana imputacja braków metodą KNN.
+Dla kolumny Rating zastosowano imputację braków metodą K-Nearest Neighbours, następnie zastąpiono oryginalną kolumnę imputowaną wersją.
 
-# Wizualizacje 
+W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono zależności między kolumnami i na ich podstawie uzupełniono braki w 150 rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z większą precyzją.
 
-W tej części zajmiemy się opracowaniem wizualizacji analizowanych danych. 
+Proces oczyszczania danych został zakończony. Zastosowane metody
+pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny
+sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych analiz,
+co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
+analitycznych.
 
-## Wizualizacja gęstości ocen względem zmiennych 
+# Wizualizacje
 
-Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ klienta czy metoda płatności. 
-Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkładają się w zależności od wybranych zmiennych.
-Wykres gęstości ilustruje rozkład zmiennej na osi numerycznej, gdzie wyższe wartości wskazują na obszary większego zagęszczenia. O
-bszary te oznaczają większą liczbę obserwacji dla danych wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
+W tej części zajmiemy się opracowaniem wizualizacji analizowanych
+danych.
+
+## Wizualizacja gęstości ocen względem zmiennych
+
+Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w
+odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ
+klienta czy metoda płatności. Wizualizacje gęstości umożliwiają
+zobrazowanie, jak oceny klientów rozkładają się w zależności od
+wybranych zmiennych. Wykres gęstości ilustruje rozkład zmiennej na osi
+numerycznej, gdzie wyższe wartości wskazują na obszary większego
+zagęszczenia. O bszary te oznaczają większą liczbę obserwacji dla danych
+wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
 
 ### Wykres gęstości ocen klientów względem filii sklepu
 
@@ -258,10 +277,14 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
     legend.title = element_text(size = 11))   
 ```
 
-**Obserwacje**
-Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje doświadczenie zakupowe w tym zakresie.
-Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii.
-Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
+**Obserwacje** Wszystkie filie mają podobny rozkład ocen, ze szczytem
+gęstości w przedziale między 6 a 8, co oznacza, że większość klientów
+ocenia swoje doświadczenie zakupowe w tym zakresie. Filia B (kolor
+jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych,
+co może sugerować bardziej spójne oceny klientów w tej filii. Filia A
+(kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane
+rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen
+skrajnych, zarówno niższych, jak i wyższych).
 
 ### Wykres gęstości ocen klientów względem płci
 
@@ -281,10 +304,15 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     legend.title = element_text(size = 11))     
 ```
 
-**Obserwacje**
-Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre".
-Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. 
-Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
+**Obserwacje** Zarówno mężczyźni, jak i kobiety mają oceny rozkładające
+się w przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w
+okolicach 7. Oznacza to, że większość klientów ocenia swoje
+doświadczenie zakupowe jako "dobre". Mężczyźni mają nieco wyższe
+wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że
+częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym
+przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na
+krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe
+rozproszenie ocen.
 
 ### Wykres gęstości ocen klientów względem typu klienta
 
@@ -304,10 +332,13 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     legend.title = element_text(size = 11))  
 ```
 
-**Obserwacje**
-Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty (kolor zielony) również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony.
-Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7.
-Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
+**Obserwacje** Klienci z kartą członkowską (kolor niebieski) osiągają
+szczyt gęstości ocen w okolicach 7. Klienci bez karty (kolor zielony)
+również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej
+rozproszony. Oceny klientów z kartą członkowską są bardziej spójne, z
+wyraźnym szczytem gęstości wokół 7. Klienci bez karty mają bardziej
+zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach
+zakupowych.
 
 ### Wykres gęstości ocen klientów względem metody płatności
 
@@ -327,9 +358,11 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
     legend.title = element_text(size = 11))  
 ```
 
-**Obserwacje**
-Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. 
-Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
+**Obserwacje** Na powyższym wykresia można zauważyć spójność ocen u
+klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt
+gęstości dla tych grup znajduje się w okolicach 7. Klienci, którzy jako
+metodę płatności wybrali kartę kredytową częściej oceniali ogólne
+doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
 
 ## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
 
@@ -342,10 +375,16 @@ ggplot(super, aes(x=Rating))+
 
 ```
 
-**Obserwacje**
-Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
+**Obserwacje** Dla kategorii akcesoriów modowych, domowych i codziennych
+oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją
+satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia
+i urody a także jedzenia i napojów najczęściej oceny oscylowały między
+8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli
+istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli
+klienci kupujący produkty należace do akcesoriów elektronicznych.
 
 ## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
+
 ```{r}
 super %>% 
   group_by(City) %>% 
@@ -358,10 +397,15 @@ super %>%
   easy_center_title() 
 ```
 
-**Obserwacje**
-Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
+**Obserwacje** Średnia ocen zadowolenia z zakupów dla poszczególnych
+miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci
+oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w
+Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ
+na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój
+proces zakupowy jako zadowalający.
 
 ## Wykres procentowy udziału linii produktowych w całkowitych kosztach.
+
 ```{r}
 product_costs <- super %>%
   group_by(Product.line) %>%
@@ -377,10 +421,15 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
     plot.title = element_text(hjust = 0.5)
   )
 ```
-**Obserwacje**
-Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
+
+**Obserwacje** Procentowy udział linii produktowych w całych kosztach
+jest zbliżony do siebie. Największy udział linii produktowej odnosi się
+do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda.
+Można również zauważyć, że tak sam udział maakcesoria związane z modą
+jak i akcesoria elektroniczne.
 
 ## Liczba zakupionych produktów w podziale na sposób płatności.
+
 ```{r}
 ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   geom_bar(stat = "identity") +
@@ -389,11 +438,11 @@ ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   scale_fill_brewer(palette = "Set3") +  # Wybór palety Set3
   theme_minimal()
 ```
-**Obserwacje**
-Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje się kolejno:
-- płacąc gotówką,
-- płacąc ewalletem
-- płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
+
+**Obserwacje** Z powyższego wykresu można wywnioskować, że najwięcej
+produktów kupuje się kolejno: - płacąc gotówką, - płacąc ewalletem -
+płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to,
+że coraz bardziej odchodzi się od płacenia gotówką.
 
 ## Wizualizacja dziennych przychodów w oddziałach z podziałem na miesiące
 
@@ -439,13 +488,33 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     legend.position = "top",
     legend.title = element_text(size = 11))
 ```
-Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi oraz maksymalnymi. 
 
-**Obserwacje**
-Spośród trzech analizowanych oddziałów, najlepiej radził sobie Oddział B, który wykazywał największą zmienność w przychodach. Sugeruje to większą dynamikę sprzedaży, a w szczytowych momentach przychody tego oddziału były najwyższe. Z kolei Oddział A radził sobie najgorzej, ze względu na największe wahania i przewagę niższych wartości, co wskazuje na mniej stabilne i niższe przychody w porównaniu do pozostałych oddziałów.
+Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów
+w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi
+oraz maksymalnymi.
 
-Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały następująco:
+**Obserwacje** Spośród trzech analizowanych oddziałów, najlepiej radził
+sobie Oddział B, który wykazywał największą zmienność w przychodach.
+Sugeruje to większą dynamikę sprzedaży, a w szczytowych momentach
+przychody tego oddziału były najwyższe. Z kolei Oddział A radził sobie
+najgorzej, ze względu na największe wahania i przewagę niższych
+wartości, co wskazuje na mniej stabilne i niższe przychody w porównaniu
+do pozostałych oddziałów.
 
-- Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
-- Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
-- Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części.
+Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały
+następująco:
+
+-   Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano
+    wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody
+    w tym okresie. Natomiast najgorszym miesiącem był marzec,
+    charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych
+    szczytów, co sugeruje niższe przychody.
+-   Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez
+    większość miesiąca obserwowano stabilny wzrost przychodów, osiągając
+    szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym
+    występowały spore wahania przychodów, bez wyraźnych długotrwałych
+    szczytów.
+-   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i
+    wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo
+    stabilnych przychodów, okazał się najgorszym miesiącem, choć
+    zanotowano lekki wzrost w środkowej jego części.
