@@ -44,6 +44,7 @@ library(ggeasy)
 library(lubridate)
 library(nortest)
 library(tseries)
+library(ggpubr)
 ```
 
 ```{r}
@@ -556,7 +557,7 @@ jarque.bera.test(super$Rating)
 
 plot.new()
 
-hist(super$Rating, freq = FALSE, main = "Histogram zmiennej rating z krzywą gęstości", xlab = "rating", col="lightgreen", ylim = c(0, 0.25))
+hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="lightgreen", ylim = c(0, 0.25))
 
 lines(density(super$Rating), col = "darkgreen", lwd = 2)
 
@@ -566,7 +567,7 @@ legend("topright", legend = c("Density", "Normal Distribution"), col = c("darkgr
 
 ```
 
-### Wnioski:
+### Wnioski
 
 Na podstawie wyników wygenerowanych dzięki testom normalności można
 zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż
@@ -577,16 +578,104 @@ hipotezę zerową mówiącą o normalności rozkładu.
 Powyższe stwierdzenie potwierdza wykres, na którym widoczny jest
 symetryczny rozkład danych, jednak odbiegający od klasycznego rozkładu
 normalnego. Występują pewne odstępstwa w częstotliwościach w porównaniu
-do idealnego rozkładu normalneg, a zatem wykres dodatkowo potwierdza
-konieczność odrzucenia H0. 
+do idealnego rozkładu normalnego (czerwona linia), a zatem wykres
+dodatkowo potwierdza konieczność odrzucenia H0.
 
-Zważywszy na ustalony brak normalności danych w dalszej analizie należy wykorzystać testy nieparametryczne lub wziąć pod uwagę konieczność transformacji danych 
+Zważywszy na ustalony brak normalności danych w dalszej analizie należy
+wykorzystać testy nieparametryczne.
 
-## Test H Kruskala-Wallisa
-## Korelacja Spearmana 
-## Wilcoxona
+## Test Wilcoxona
+
+Test Wilcoxona jest testem statystycznym zaliczanym do metod
+nieparametrycznych, wykorzystywanym do porównywania dwóch grup,
+zwłaszcza gdy dane nie spełniają założeń normalności rozkładu. Test
+analizuje rangowe wartości danych, co pozwala mu działać niezależnie od
+rozkładu zmiennych i sprawia, że jest mniej podatny na wpływ wartości
+odstających. Dzięki temu wykorzystywany jest w przypadkach, gdy dane
+mają nietypowe rozkłady, tak jak w przypadku danych ze zbioru
+*superstore*.
+
+**H0: mediany obu grup są równe**
+
+**H1: mediany obu grup różnią się**
+
+```{r}
+wilcox.test(super$Rating, super$Total)
+```
+
+### Wnioski
+
+Istnieje znacząca różnica między oceną doświadczenia zakupowego klienta
+(Rating) a całkowitą kwotą zapłaconą przez klienta (Total). Hipoteza
+zerowa w teście Wilcoxona zakłada, że mediana różnicy między dwoma
+grupami wynosi zero, co oznacza brak istotnej różnicy między nimi.
+P-value bliskie zeru wskazuje, że różnica jest istotna statystycznie.
+Dodatkowo otrzymany wynik W = 0 podkreśla ekstremalność tej różnicy —
+występuje znaczna rozbieżność między rozkładami zmiennych.Oznacza to, że
+ocena klienta nie była zależna od kwoty jaką zapłacił w sklepie.
+
+## Test Kruskala-Wallisa
+
+Test Kruskala-Wallisa to nieparametryczny test statystyczny używany do
+porównywania median więcej niż dwóch grup niezależnych, gdy nie można
+założyć normalności rozkładu danych. Jest alternatywą dla
+jednoczynnikowej analizy wariancji (ANOVA)
+
+**H0: mediany wszystkich porównywanych grup są równe**
+
+**H1: przynajmniej jedna z median różni się od pozostałych**
+
+*Ocena \~ Filia*
+
+```{r}
+kruskal.test(Rating ~ Branch, super)
+
+ggboxplot(super, x = "Branch", y = "Rating", 
+          color = "Branch", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+```
+
+*Ocena \~ Sposób płatności*
+
+```{r}
+kruskal.test(Rating ~ Payment, super)
+
+ggboxplot(super, x = "Payment", y = "Rating", 
+          color = "Payment", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+```
+
+*Ocena \~ Miasto*
+
+```{r}
+kruskal.test(Rating ~ City, super)
+
+ggboxplot(super, x = "City", y = "Rating", 
+          color = "City", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+```
+
+### Wnioski
+
+We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło
+więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy
+wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma
+istotnych statystycznie różnic między:
+
+-   medianami ocen doświadczenia zakupowego w trzech filiach
+-   medianami ocen doświadczenia zakupowego względem trzech możliwych
+    sposobów płatności;
+-   medianami ocen doświadczenia zakupowego względem miast
+    funkcjonowania sklepów.
+
+Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób
+płatności nie mają istotnego wpływu na finalną ocenę zakupów przez
+klienta. Potwierdzeniem powyższych wyników są również wygenerowane
+wykresy pudełkowe, w których zakresy kwartylów są do siebie znacznie
+zbliżone.
 
 # Testy porównawcze
-## Test ANOVA dla filii sklepu 
-## Test ANOVA dla wybranej metody płatności 
 
+## Test ANOVA dla filii sklepu
+
+## Test ANOVA dla wybranej metody płatności
