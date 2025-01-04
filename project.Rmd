@@ -593,15 +593,13 @@ Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji Pearsona,
 **H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny od 0**
 
 ```{r}
-#
-install.packages("GGally")
-ggcorr(super, method = c("spearman"),
-  nbreaks = NULL, digits = 2, low = "#3B9AB2",
-  mid = "#EEEEEE", high = "#F21A00",
-  geom = "tile", label = FALSE,
-  label_alpha = FALSE)
-```
+library(corrplot)
+cor.data <- super[, c(7:10, 14, 16:17)]
+super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
+corrplot(super.cor)
+```
+czy to ma sens??????????
 
 ## Test Wilcoxona
 
