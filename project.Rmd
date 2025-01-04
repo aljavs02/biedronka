@@ -584,6 +584,25 @@ dodatkowo potwierdza konieczność odrzucenia H0.
 Zważywszy na ustalony brak normalności danych w dalszej analizie należy
 wykorzystać testy nieparametryczne.
 
+## Korelacja Spearmana
+
+Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji Pearsona, wykorzystywana do oceny siły i kierunku zależności między dwiema zmiennymi. Współczynnik korelacji Spearmana mierzy, jak dobrze monotonicznie (czyli w sposób ciągły rosnący lub malejący) zmieniają się wartości jednej zmiennej w zależności od drugiej. Jeśli współczynnik korelacji jest bliski 1 lub -1, oznacza to silny związek, natomiast wartość bliska 0 wskazuje na brak monotonicznej zależności.
+
+**H0: zmienne są niezależne, a współczynnik korelacji Spearmana wynosi 0**
+
+**H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny od 0**
+
+```{r}
+#
+install.packages("GGally")
+ggcorr(super, method = c("spearman"),
+  nbreaks = NULL, digits = 2, low = "#3B9AB2",
+  mid = "#EEEEEE", high = "#F21A00",
+  geom = "tile", label = FALSE,
+  label_alpha = FALSE)
+```
+
+
 ## Test Wilcoxona
 
 Test Wilcoxona jest testem statystycznym zaliczanym do metod
