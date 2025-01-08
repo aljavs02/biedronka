@@ -599,7 +599,10 @@ super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
 corrplot(super.cor)
 ```
-czy to ma sens??????????
+### Wnioski
+
+Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz dochód brutto są ze sobą silnie powiązane, co wynika z ich bezpośredniego związku z transakcjami finansowymi. Wyższa cena jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację z innymi zmiennymi, sugerując, że są one bardziej subiektywne i niezależne od wyników transakcji. W rezultacie, zależności między zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy oceny klientów pozostają mniej związane z tymi parametrami.
+
 
 ## Test Wilcoxona
 
@@ -693,6 +696,25 @@ zbliżone.
 
 # Testy porównawcze
 
+
 ## Test ANOVA dla filii sklepu
+
+Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup. 
+```{r}
+super$Branch <- as.factor(super$Branch)
+anova_result <- aov(gross.income ~ Branch, data = super)
+summary(anova_result)
+```
+### Wnioski
+Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
+
+
+
+## Regresja
+
+
+
+
+
 
 ## Test ANOVA dla wybranej metody płatności
