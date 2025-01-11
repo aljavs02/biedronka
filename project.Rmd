@@ -223,7 +223,7 @@ co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
 analitycznych.
 
 ```{r}
-# 7. Walidacja danych
+# 8. Walidacja danych
 rules <- validator(
   gross.income==Total-cogs,
   Total==Unit.price*Quantity+Tax.5.
