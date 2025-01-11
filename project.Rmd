@@ -46,9 +46,10 @@ library(lubridate)
 library(nortest)
 library(tseries)
 library(ggpubr)
+library(corrplot)
 ```
 
-```{r}
+```{r, echo=FALSE}
 
 # wczytanie danych 
 super <- read.csv("supermarket_new.csv")
@@ -97,7 +98,7 @@ Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
 zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy
 użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
 
-```{r}
+```{r, echo=FALSE}
 # zmiana formatu zmiennej Date
 super <- super %>%
   mutate(Date = mdy(Date))
@@ -453,7 +454,7 @@ bardziej odchodzi się od płacenia gotówką.
 
 ## Wizualizacja dziennych przychodów w oddziałach z podziałem na miesiące
 
-```{r}
+```{r, message = FALSE}
 # Obliczanie dziennych przychodów
 super <- super %>% 
   group_by(Date, Branch) %>% 
@@ -473,7 +474,7 @@ extrema <- super %>%
 
 # Tworzenie wykresu
 ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Branch)) +
-  geom_line(size = 0.5) +
+  geom_line(linewidth = 0.5) +
   geom_point(
     data = extrema,
     aes(x = Date, y = Value, shape = Type),
@@ -542,7 +543,7 @@ wykonane poprawnie należy przetestować poniższe hipotezy:
 
 **H1: rozkład nie jest normalny**
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 # Zestaw testów na normalność
 
 ## Shapiro-Wilk
@@ -593,8 +594,7 @@ Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji Pearsona,
 
 **H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny od 0**
 
-```{r}
-library(corrplot)
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 cor.data <- super[, c(7:10, 14, 16:17)]
 super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
@@ -648,7 +648,7 @@ jednoczynnikowej analizy wariancji (ANOVA)
 
 *Ocena \~ Filia*
 
-```{r}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
@@ -658,7 +658,7 @@ ggboxplot(super, x = "Branch", y = "Rating",
 
 *Ocena \~ Sposób płatności*
 
-```{r}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
@@ -668,7 +668,7 @@ ggboxplot(super, x = "Payment", y = "Rating",
 
 *Ocena \~ Miasto*
 
-```{r}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
@@ -719,3 +719,5 @@ Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność 
 
 
 ## Test ANOVA dla wybranej metody płatności
+
+# Podsumowanie i wnioski
