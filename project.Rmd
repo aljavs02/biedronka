@@ -7,6 +7,7 @@ output:
     highlight: kate
     toc_float: true
     toc_depth: 4
+    css: "custom_styles.css"
 editor_options: 
   markdown: 
     wrap: 72
