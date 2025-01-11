@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Ustawienia ogólne */
 body {
   margin: 0;
@@ -71,3 +72,78 @@ img {
     padding: 10px;
   }
 }
+=======
+/* Ustawienia ogólne */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* Kontener */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Styl nagłówka */
+header {
+  background: #333;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+/* Styl zawartości */
+.content {
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* Styl dla tabel */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+/* Styl dla obrazów */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsywność dla mniejszych ekranów */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 1.5em;
+  }
+
+  .content {
+    padding: 10px;
+  }
+}
+>>>>>>> caa39240d26058142a1f46f26f4711213e8ca6e5
