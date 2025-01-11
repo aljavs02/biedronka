@@ -31,7 +31,7 @@ została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 
 knitr::opts_chunk$set(echo = TRUE)
-options(scipen = 999, digits=6) 
+options(scipen = 999, digits = 6, width =  ) 
 
 # załadowanie potrzebnych bibliotek
 library(dplyr) 
@@ -53,13 +53,6 @@ library(corrplot)
 
 # wczytanie danych 
 super <- read.csv("supermarket_new.csv")
-
-```
-
-```{r, echo=FALSE}
-
-# wyświetlenie pierwszych 6 wierszy ze zbioru danych
-knitr::kable(head(super))
 
 ```
 
@@ -104,11 +97,6 @@ super <- super %>%
   mutate(Date = mdy(Date))
 ```
 
-```{r}
-# statystyki podsumowujące
-summary(super)
-
-```
 
 Dzięki funkcji *summary* można zauważyć, iż rekordy nie są kompletne i
 niezbędne będzie przeprowadzenie ich czyszczenia co zostanie wykonane w
@@ -160,7 +148,7 @@ n_miss(super)
 prop_miss(super) 
 miss_var_summary(super)
 vis_miss(super)
-gg_miss_fct(super, fct = Gender)  
+gg_miss_fct(super, fct = Gender)  # rozdzielic na oddzielny chunk
 gg_miss_upset(super) 
 ```
 
