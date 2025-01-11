@@ -97,7 +97,6 @@ super <- super %>%
   mutate(Date = mdy(Date))
 ```
 
-
 # Data Cleansing & Data Wrangling
 
 Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych
@@ -222,6 +221,24 @@ pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny
 sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych analiz,
 co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
 analitycznych.
+
+```{r}
+# 7. Walidacja danych
+rules <- validator(
+  gross.income==Total-cogs,
+  Total==Unit.price*Quantity+Tax.5.
+)
+cf <- confront(super, rules, key="Invoice.ID")
+summary(cf)
+```
+
+```{r}
+# Wizualizacja wyników walidacji
+barplot(cf, main="Walidacja obliczeń dla Total i dochodu")
+# Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
+super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
+
+```
 
 # Wizualizacje
 
@@ -495,7 +512,19 @@ następująco:
     wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo
     stabilnych przychodów, okazał się najgorszym miesiącem, choć
     zanotowano lekki wzrost w środkowej jego części.
-
+```{r}
+super <- super %>%
+  mutate(Time_numeric = hour(hms(Time)) + minute(hms(Time)) / 60 + second(hms(Time)) / 3600)
+super %>%
+  group_by(Time_numeric) %>% 
+  mutate(m = cut(Time_numeric, breaks = c(0, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, Inf), 
+                 labels = c("10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21"))) %>%
+  group_by(m) %>% 
+  summarise(gross_income = sum(gross.income, na.rm = TRUE)) %>%
+  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "steelblue") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_bw()
+```
+Na podstawie przedstawionego wykresu można ustalić, że najbardziej dochodwy okres dla supermarketu występuje między godzinami 19 a 20. Przedstawiony wykres użyteczny może okazać się przy ustalaniu i modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
+Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej godzinie otwarcia sklepu.
 # Statystyki opisowe
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -531,9 +560,9 @@ kbl(
   )
 ```
 
-
-Powyższy kod genruje wyniki minimalnych, maksymalnych i średnich wartości zmiennych przyjmujących typ numeryczny
-i liczb całkowitych oraz określa wartości mediany, 1. oraz 3. kwartla.
+Powyższy kod genruje wyniki minimalnych, maksymalnych i średnich
+wartości zmiennych przyjmujących typ numeryczny i liczb całkowitych oraz
+określa wartości mediany, 1. oraz 3. kwartla.
 
 Dzięki powyższym wynikom można zauważyć poniższe zależności:
 
@@ -547,7 +576,6 @@ Dzięki powyższym wynikom można zauważyć poniższe zależności:
 
 Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
 omówione w dalszej części analizy.
-
 
 # Wnioskowanie (testy statystyczne)
 
@@ -610,11 +638,19 @@ wykorzystać testy nieparametryczne.
 
 ## Korelacja Spearmana
 
-Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji Pearsona, wykorzystywana do oceny siły i kierunku zależności między dwiema zmiennymi. Współczynnik korelacji Spearmana mierzy, jak dobrze monotonicznie (czyli w sposób ciągły rosnący lub malejący) zmieniają się wartości jednej zmiennej w zależności od drugiej. Jeśli współczynnik korelacji jest bliski 1 lub -1, oznacza to silny związek, natomiast wartość bliska 0 wskazuje na brak monotonicznej zależności.
+Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji
+Pearsona, wykorzystywana do oceny siły i kierunku zależności między
+dwiema zmiennymi. Współczynnik korelacji Spearmana mierzy, jak dobrze
+monotonicznie (czyli w sposób ciągły rosnący lub malejący) zmieniają się
+wartości jednej zmiennej w zależności od drugiej. Jeśli współczynnik
+korelacji jest bliski 1 lub -1, oznacza to silny związek, natomiast
+wartość bliska 0 wskazuje na brak monotonicznej zależności.
 
-**H0: zmienne są niezależne, a współczynnik korelacji Spearmana wynosi 0**
+**H0: zmienne są niezależne, a współczynnik korelacji Spearmana wynosi
+0**
 
-**H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny od 0**
+**H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny
+od 0**
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 cor.data <- super[, c(7:10, 14, 16:17)]
@@ -622,10 +658,19 @@ super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
 corrplot(super.cor)
 ```
+
 ### Wnioski
 
-Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz dochód brutto są ze sobą silnie powiązane, co wynika z ich bezpośredniego związku z transakcjami finansowymi. Wyższa cena jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację z innymi zmiennymi, sugerując, że są one bardziej subiektywne i niezależne od wyników transakcji. W rezultacie, zależności między zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy oceny klientów pozostają mniej związane z tymi parametrami.
-
+Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych
+produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz
+dochód brutto są ze sobą silnie powiązane, co wynika z ich
+bezpośredniego związku z transakcjami finansowymi. Wyższa cena
+jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych
+wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację
+z innymi zmiennymi, sugerując, że są one bardziej subiektywne i
+niezależne od wyników transakcji. W rezultacie, zależności między
+zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy
+oceny klientów pozostają mniej związane z tymi parametrami.
 
 ## Test Wilcoxona
 
@@ -719,20 +764,26 @@ zbliżone.
 
 # Testy porównawcze
 
-
 ## Test ANOVA dla filii sklepu
 
-Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup. 
+Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w
+sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice
+pomiędzy średnimi kilku grup.
+
 ```{r}
 super$Branch <- as.factor(super$Branch)
 anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
 ```
+
 ### Wnioski
-Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
 
-
-
+Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność
+pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo
+niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto
+między poszczególnymi filiami są bardzo małe, więc są nieistotne
+statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności
+(zazwyczaj jest to 0.05).
 
 ## Test ANOVA dla wybranej metody płatności
 
