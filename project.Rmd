@@ -498,61 +498,39 @@ następująco:
 
 # Statystyki opisowe
 
-```{r kable_report2, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-
-install.packages("psych")
-install.packages("summarytools")
-options(qwraps2_markup = "markdown")
-library(psych)
-library(qwraps2)
-library(summarytools)
-library(kableExtra)
-sum <-
-  list("Ratio" =
-       list("Min"= ~ min(gross.income),
-            "Max"= ~ max(gross.income),
-            "Kwartyl dolny"= ~ quantile(gross.income,0.25),
-            "Mediana"= ~ round(median(gross.income),2),
-            "Kwartyl górny"= ~ quantile(gross.income,0.75),
-            "Średnia"= ~ round(mean(gross.income),2),
-            "Odch. std."= ~ round(sd(gross.income),2),
-            "IQR"= ~ round(iqr(gross.income),2),
-            "Odchylenie ćwiartkowe"=~round(iqr(gross.income)/2,2),
-            "Odch. std. w %"=~round((sd(gross.income)/mean(gross.income)),2),
-            "Odch. ćwiartkowe w %"=~round((iqr(gross.income)/median(gross.income)),2),
-            "Skośność"=~round(skew(gross.income),2),
-            "Kurtoza"=~round(kurtosi(gross.income),2)
-            ))
-tabela <- summary_table(super, summaries = sum, by = "Branch")
-view(tabela)
-knitr::kable(tabela,
-  digits = 2,
-  align = "lcccc",
-  caption="Tabela 1. gross.income wdg branchu.",
-  col.names = c("stat", "A", "B", "C")) 
-```
-nie działa mi to - to be investigated, sprawdźcie jak u Was
-
-```{r}
-install.packages("gtsummary")
-library(gtsummary)
-super %>%
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
   select(gross.income, Branch) %>%
-  tbl_summary(
-    by=Branch,
-    type = all_continuous() ~ "continuous2",
-    statistic = all_continuous() ~ c(
-      "{N_nonmiss}","{mean}","{sd}",
-      "{median} ({p25}, {p75})",
-      "{min}, {max}"),
-    missing = "no",
-    label = gross.income ~ "gross.income") %>%
-  modify_header(label ~ "**Zmienna**") %>%
-  modify_caption("**Tabela 1. Rozkład gross.icome wdg filii**") %>%
-  bold_labels() %>% 
-  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2))
+  group_by(Branch) %>%
+  summarize(Min=min(gross.income),
+            Max=max(gross.income),
+            średnia=mean(gross.income),
+            odchylenie = sd(gross.income),
+            mediana = median(gross.income),
+            Q1=quantile(gross.income,0.25),
+            Q3=quantile(gross.income,0.75),
+            Skośność=skew(gross.income),
+            Kurtoza=kurtosi(gross.income)) %>%
+kbl(
+    caption = "Tabela 1. Statystyki rozkładu gross.income wg branchu.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Branch", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#e57373", color = "#222222") %>%  
+  row_spec(2, bold = F, background = "#ffebee", color = "#222222") %>%    
+  row_spec(c(1, 3), bold = F, background = "#ffcdd2") %>%  
+  footnote(
+    general = "Tabela przedstawia podstawowe statystyki opisowe zmiennej gross.income w podziale na oddziały.",
+    footnote_as_chunk = TRUE
+  )
 ```
-czemu to się to Date dodaje - ja pierdziele
+
 
 Powyższy kod genruje wyniki minimalnych, maksymalnych i średnich wartości zmiennych przyjmujących typ numeryczny
 i liczb całkowitych oraz określa wartości mediany, 1. oraz 3. kwartla.
