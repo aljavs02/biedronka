@@ -47,6 +47,7 @@ library(nortest)
 library(tseries)
 library(ggpubr)
 library(corrplot)
+library(kableExtra)
 ```
 
 ```{r, echo=FALSE}
@@ -60,26 +61,47 @@ super <- read.csv("supermarket_new.csv")
 
 Zbiór danych supermarket_new zawiera następujące zmienne:
 
-| Zmienna | Opis |
-|------------------------------------|:-----------------------------------|
-| **Invoice id** | Numer identyfikacyjny faktury sprzedaży (unikalna wartość) |
-| **Branch** | Oddział supercentrum (3 oddziały oznaczone literami A, B, C). |
-| **City** | Lokalizacja supercentrów |
-| **Customer type** | Typ klienta (z kartą członkowską lub bez) |
-| **Gender** | Płeć klienta |
-| **Product line** | Ogólne grupy kategoryzacji przedmiotów |
-| **Unit price** | Cena każdego produktu w \$ |
-| **Quantity** | Liczba produktów zakupionych przez klienta |
-| **Tax** | Opłata podatkowa w wysokości 5% dla klienta dokonującego zakupu |
-| **Total** | Cena całkowita z podatkiem |
-| **Date** | Data zakupu (rekord dostępny od 01.2019 do 03.2019) |
-| **Time** | Czas zakupu (od 10:00 do 21:00) |
-| **Payment** | Płatność wykorzystana przez klienta do zakupu (gotówka, karta kredytowa lub portfel elektroniczny) |
-| **COGS** | Koszt sprzedanych towarów |
-| **Gross margin percentage** | Procentowa marża brutto |
-| **Gross income** | Dochód brutto |
-| **Rating** | Ocena stratyfikacji klientów (w skali od 1 do 10) |
+```{r, echo = F}
+data_description <- data.frame(
+  Zmienna = c("Invoice id", "Branch", "City", "Customer type", "Gender", 
+              "Product line", "Unit price", "Quantity", "Tax", "Total", 
+              "Date", "Time", "Payment", "COGS", "Gross margin percentage", 
+              "Gross income", "Rating"),
+  Opis = c("Numer identyfikacyjny faktury sprzedaży (unikalna wartość)", 
+           "Oddział supercentrum (3 oddziały oznaczone literami A, B, C)", 
+           "Lokalizacja supercentrów", 
+           "Typ klienta (z kartą członkowską lub bez)", 
+           "Płeć klienta", 
+           "Ogólne grupy kategoryzacji przedmiotów", 
+           "Cena każdego produktu w $", 
+           "Liczba produktów zakupionych przez klienta", 
+           "Opłata podatkowa w wysokości 5% dla klienta dokonującego zakupu", 
+           "Cena całkowita z podatkiem", 
+           "Data zakupu (rekord dostępny od 01.2019 do 03.2019)", 
+           "Czas zakupu (od 10:00 do 21:00)", 
+           "Płatność wykorzystana przez klienta do zakupu (gotówka, karta kredytowa lub portfel elektroniczny)", 
+           "Koszt sprzedanych towarów", 
+           "Procentowa marża brutto", 
+           "Dochód brutto", 
+           "Ocena stratyfikacji klientów (w skali od 1 do 10)")
+)
 
+data_description %>%
+  kbl(
+    caption = "Tabela 1. Opis zmiennych w zbiorze danych *supermarket_new*",
+    col.names = c("Zmienna", "Opis"),
+    align = "lc",
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  # Kolor nagłówka
+  row_spec(seq(1, nrow(data_description), 2), background = "#f2c0cd") %>%  # Kolory co drugiego wiersza
+  row_spec(seq(2, nrow(data_description), 2), background = "#fbeaee")
+```
 ```{r}
 # struktura danych
 str(super)
@@ -146,7 +168,7 @@ table(super$Rating)
 unique(super$Rating)
 ggplot(super, aes(x=Rating))+ 
   geom_boxplot(fill="Dark Sea Green 3")+
-  coord_flip()
+  coord_flip() + theme_minimal()
   
 ```
 
@@ -364,7 +386,7 @@ w okolicach 8, na co wskazuje szczyt gęstości.
 ggplot(super, aes(x=Rating))+
   geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
   labs(x="Oceny ", y="Liczba osób")+
-  theme_bw()+
+  theme_minimal()+
   facet_grid(~Product.line)
 
 ```
@@ -387,7 +409,7 @@ super %>%
   geom_col(fill="Slate Blue 1", color= 'black')+
   geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
   labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
-  theme_bw()+
+  theme_minimal()+
   easy_center_title() 
 ```
 
@@ -410,7 +432,7 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar("y") +
   geom_text(aes(label = paste0(round(Percentage, 1), "%")), position = position_stack(vjust = 0.5)) + 
-  theme_void() +
+  theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5)
   )
@@ -512,7 +534,7 @@ następująco:
     wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo
     stabilnych przychodów, okazał się najgorszym miesiącem, choć
     zanotowano lekki wzrost w środkowej jego części.
-```{r}
+```{r, }
 super <- super %>%
   mutate(Time_numeric = hour(hms(Time)) + minute(hms(Time)) / 60 + second(hms(Time)) / 3600)
 super %>%
@@ -521,11 +543,14 @@ super %>%
                  labels = c("10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21"))) %>%
   group_by(m) %>% 
   summarise(gross_income = sum(gross.income, na.rm = TRUE)) %>%
-  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "steelblue") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_bw()
+  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "steelblue") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal()
 ```
 Na podstawie przedstawionego wykresu można ustalić, że najbardziej dochodwy okres dla supermarketu występuje między godzinami 19 a 20. Przedstawiony wykres użyteczny może okazać się przy ustalaniu i modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
 Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej godzinie otwarcia sklepu.
+
 # Statystyki opisowe
+
+## gross.income
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -538,44 +563,151 @@ super %>%
             mediana = median(gross.income),
             Q1=quantile(gross.income,0.25),
             Q3=quantile(gross.income,0.75),
-            Skośność=skew(gross.income),
-            Kurtoza=kurtosi(gross.income)) %>%
+            Skośność=skewness(gross.income),
+            Kurtoza=kurtosis(gross.income)) %>%
 kbl(
-    caption = "Tabela 1. Statystyki rozkładu gross.income wg branchu.",
+    caption = "Statystyki rozkładu gross.income wg filii.",
     digits = 2,
     align = "lccccccccc",
-    col.names = c("Branch", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+    col.names = c("Filia", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
   ) %>%
   kable_styling(
     bootstrap_options = c("striped", "condensed", "bordered"),
     full_width = FALSE,
     position = "center"
   ) %>%
-  row_spec(0, bold = TRUE, background = "#e57373", color = "#222222") %>%  
-  row_spec(2, bold = F, background = "#ffebee", color = "#222222") %>%    
-  row_spec(c(1, 3), bold = F, background = "#ffcdd2") %>%  
-  footnote(
-    general = "Tabela przedstawia podstawowe statystyki opisowe zmiennej gross.income w podziale na oddziały.",
-    footnote_as_chunk = TRUE
-  )
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(2, bold = F, background = "#fbeaee")
 ```
 
-Powyższy kod genruje wyniki minimalnych, maksymalnych i średnich
-wartości zmiennych przyjmujących typ numeryczny i liczb całkowitych oraz
-określa wartości mediany, 1. oraz 3. kwartla.
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(gross.income, City) %>%
+  group_by(City) %>%
+  summarize(Min=min(gross.income),
+            Max=max(gross.income),
+            średnia=mean(gross.income),
+            odchylenie = sd(gross.income),
+            mediana = median(gross.income),
+            Q1=quantile(gross.income,0.25),
+            Q3=quantile(gross.income,0.75),
+            Skośność=skewness(gross.income),
+            Kurtoza=kurtosis(gross.income)) %>%
+kbl(
+    caption = "Statystyki rozkładu gross.income wg miasta.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Miasto", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(2, bold = F, background = "#fbeaee")
+```
 
-Dzięki powyższym wynikom można zauważyć poniższe zależności:
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(gross.income, Product.line) %>%
+  group_by(Product.line) %>%
+  summarize(Min=min(gross.income),
+            Max=max(gross.income),
+            średnia=mean(gross.income),
+            odchylenie = sd(gross.income),
+            mediana = median(gross.income),
+            Q1=quantile(gross.income,0.25),
+            Q3=quantile(gross.income,0.75),
+            Skośność=skewness(gross.income),
+            Kurtoza=kurtosis(gross.income)) %>%
+kbl(
+    caption = "Statystyki rozkładu gross.income wg kategorii produktu.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Kategoria produktu", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(c(2, 4, 6), bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(c(1, 3, 5), bold = F, background = "#fbeaee")
+```
+- Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
+- Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
+- Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
+- Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
 
--   średnia ocena sklepu wynosi 7 punktów, natomiast żaden z klientów
-    nie wystawił oceny niższej niż 4 
--   najdroższy zakup dokonany w tym sklepie w okresie od stycznia 2019
-    do marca 2019 wynosiło 1042.7\$\
--   średnio klienci w tych oddziałach dokonywali zakupów na kwotę 323\$\
--   mediana niższa od średniej (253.8\$ \< 323\$) może wskazywać na
-    prawoskośność rozkładu oraz na dużą liczbę wartości odstających 
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(gross.income, Sex) %>%
+  group_by(Sex) %>%
+  summarize(Min=min(gross.income),
+            Max=max(gross.income),
+            średnia=mean(gross.income),
+            odchylenie = sd(gross.income),
+            mediana = median(gross.income),
+            Q1=quantile(gross.income,0.25),
+            Q3=quantile(gross.income,0.75),
+            Skośność=skewness(gross.income),
+            Kurtoza=kurtosis(gross.income)) %>%
+kbl(
+    caption = "Statystyki rozkładu gross.income wg płci.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Płeć", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(2, bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(1, bold = F, background = "#fbeaee")
+```
 
-Nieuwzględnione statystyki z powyższej tabeli zostaną szczegółowo
-omówione w dalszej części analizy.
+- Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
+- Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
+- Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(gross.income, Customer.type) %>%
+  group_by(Customer.type) %>%
+  summarize(Min=min(gross.income),
+            Max=max(gross.income),
+            średnia=mean(gross.income),
+            odchylenie = sd(gross.income),
+            mediana = median(gross.income),
+            Q1=quantile(gross.income,0.25),
+            Q3=quantile(gross.income,0.75),
+            Skośność=skewness(gross.income),
+            Kurtoza=kurtosis(gross.income)) %>%
+kbl(
+    caption = "Statystyki rozkładu gross.income wg typu klienta.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Typ klienta", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(2, bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(1, bold = F, background = "#fbeaee")
+```
+- Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
+- Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
+- Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
+
 
 # Wnioskowanie (testy statystyczne)
 
@@ -608,14 +740,11 @@ jarque.bera.test(super$Rating)
 # Histogram
 
 plot.new()
-
 hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="lightgreen", ylim = c(0, 0.25))
-
 lines(density(super$Rating), col = "darkgreen", lwd = 2)
-
 curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "red", lwd = 2, add = TRUE)
-
 legend("topright", legend = c("Density", "Normal Distribution"), col = c("darkgreen", "red"), lwd = 2)
+
 
 ```
 
@@ -720,7 +849,7 @@ kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
           color = "Branch", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
 ```
 
 *Ocena \~ Sposób płatności*
@@ -730,7 +859,7 @@ kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
           color = "Payment", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
 ```
 
 *Ocena \~ Miasto*
@@ -740,7 +869,7 @@ kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
           color = "City", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5))
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
 ```
 
 ### Wnioski
