@@ -1,0 +1,5 @@
+Zlokalizuj miejsce przechowywania pliku komendą
+.libPaths
+Następnie przejdź według schematu:
+rmdformats ->templates->readthedown->readthedown.css
+Kolejno w wierszu nr 166 zmień max-width z 900px na 1920px
