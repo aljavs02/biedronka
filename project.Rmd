@@ -12,7 +12,7 @@ editor_options:
   markdown: 
     wrap: 72
 ---
-
+<div class = "main-content">
 # Wstęp
 
 ## Opis problemu
@@ -168,7 +168,10 @@ table(super$Rating)
 unique(super$Rating)
 ggplot(super, aes(x=Rating))+ 
   geom_boxplot(fill="Dark Sea Green 3")+
-  coord_flip() + theme_minimal()
+  coord_flip() +
+  labs(title = "Wykres zmiennej Rating")+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+  theme_minimal(base_size = 12) + easy_center_title() 
   
 ```
 
@@ -256,7 +259,7 @@ summary(cf)
 
 ```{r}
 # Wizualizacja wyników walidacji
-barplot(cf, main="Walidacja obliczeń dla Total i dochodu")
+barplot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
 # Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
 super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
 
@@ -290,7 +293,7 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
     fill = "Filia") +
   theme_minimal(base_size = 12) +  
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
     legend.title = element_text(size = 11))   
 ```
@@ -317,7 +320,7 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     fill = "Płeć") +
   theme_minimal(base_size = 12) +  
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
     legend.title = element_text(size = 11))     
 ```
@@ -344,7 +347,7 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     fill = "Typ klienta") +
   theme_minimal(base_size = 12) +  
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
     legend.title = element_text(size = 11))  
 ```
@@ -369,7 +372,7 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
     fill = "Metoda płatności") +
   theme_minimal(base_size = 12) +  
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
     legend.title = element_text(size = 11))  
 ```
@@ -385,8 +388,9 @@ w okolicach 8, na co wskazuje szczyt gęstości.
 ```{r}
 ggplot(super, aes(x=Rating))+
   geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
-  labs(x="Oceny ", y="Liczba osób")+
-  theme_minimal()+
+  labs(title = "Rozkład ocen klientów względem kategorii zakupowych produktów", x="Oceny ", y="Liczba osób")+
+  theme(plot.title = element_text(hjust = 0.5, face = "plain"))+
+  theme_minimal(base_size = 12)+
   facet_grid(~Product.line)
 
 ```
@@ -409,7 +413,7 @@ super %>%
   geom_col(fill="Slate Blue 1", color= 'black')+
   geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
   labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
-  theme_minimal()+
+  theme_minimal(base_size = 12)+
   easy_center_title() 
 ```
 
@@ -432,10 +436,10 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar("y") +
   geom_text(aes(label = paste0(round(Percentage, 1), "%")), position = position_stack(vjust = 0.5)) + 
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5)
-  )
+  labs(title="Udział linii produktowych w całkowitych kosztach")
+  theme_minimal(base_size = 12) +
+  easy_center_title()+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
 Procentowy udział linii produktowych w całych kosztach jest zbliżony do
@@ -452,7 +456,9 @@ ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
        x = "Sposób płatności", y = "Liczba produktów (Quantity)") +
   scale_fill_brewer(palette = "Set3") +  # Wybór palety Set3
-  theme_minimal()
+  theme_minimal(base_size = 12) +
+  easy_center_title() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje
@@ -543,7 +549,7 @@ super %>%
                  labels = c("10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21"))) %>%
   group_by(m) %>% 
   summarise(gross_income = sum(gross.income, na.rm = TRUE)) %>%
-  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "steelblue") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal()
+  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "steelblue") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
 ```
 Na podstawie przedstawionego wykresu można ustalić, że najbardziej dochodwy okres dla supermarketu występuje między godzinami 19 a 20. Przedstawiony wykres użyteczny może okazać się przy ustalaniu i modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
 Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej godzinie otwarcia sklepu.
@@ -740,6 +746,7 @@ jarque.bera.test(super$Rating)
 # Histogram
 
 plot.new()
+par(font.main = 1)
 hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="lightgreen", ylim = c(0, 0.25))
 lines(density(super$Rating), col = "darkgreen", lwd = 2)
 curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "red", lwd = 2, add = TRUE)
@@ -849,7 +856,9 @@ kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
           color = "Branch", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
+          labs(title ="Wykresy pudełkowe Oceny i Filii") + easy_center_title()
+          
 ```
 
 *Ocena \~ Sposób płatności*
@@ -859,7 +868,8 @@ kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
           color = "Payment", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12)  + 
+          labs(title ="Wykresy pudełkowe Oceny i Sposobu płatności") + easy_center_title()
 ```
 
 *Ocena \~ Miasto*
@@ -869,7 +879,8 @@ kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
           color = "City", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal()
+          legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
+          labs(title ="Wykresy pudełkowe Oceny i Miasta") + easy_center_title()
 ```
 
 ### Wnioski
@@ -917,3 +928,4 @@ statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności
 ## Test ANOVA dla wybranej metody płatności
 
 # Podsumowanie i wnioski
+</div>

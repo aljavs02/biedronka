@@ -1,149 +1,47 @@
-
-/* Ustawienia ogólne */
+/* Globalny styl dla body */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+    width: 100% !important; /* Ustawienie pełnej szerokości */
+    max-width: 100% !important; /* Ustawienie maksymalnej szerokości na 100% */
+    margin: 0 auto !important;  /* Wyśrodkowanie raportu */
+    /*padding: 1rem !important;   /* Dodanie wewnętrznego marginesu dla czytelności */
+    box-sizing: border-box !important; /* Uwzględnienie paddingu w szerokości */
 }
 
-/* Kontener */
-.container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
+/* Justowanie tekstu */
+p, li {
+    text-align: justify; /* Justowanie tekstu w paragrafach i listach */
+    line-height: 1.6;    /* Poprawa czytelności przez większe odstępy między wierszami */
 }
 
-/* Styl nagłówka */
-header {
-  background: #333;
-  color: #fff;
-  padding: 20px 0;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 2em;
-}
-
-/* Styl zawartości */
-.content {
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-}
-
-/* Styl dla tabel */
+/* Opcjonalnie: poprawa responsywności dla tabel */
 table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table, th, td {
-  border: 1px solid #ddd;
+    width: 100%; /* Tabele zajmują całą szerokość kontenera */
+    border-collapse: collapse; /* Usunięcie odstępów między komórkami */
+    margin-bottom: 1rem;
 }
 
 th, td {
-  padding: 10px;
-  text-align: left;
+    text-align: left; /* Justowanie tekstu w komórkach */
+    padding: 0.5rem;
+    border: 1px solid #ddd; /* Dodanie delikatnych linii */
 }
 
-/* Styl dla obrazów */
-img {
-  max-width: 100%;
-  height: auto;
+/* Nagłówki */
+h1, h2, h3, h4, h5, h6 {
+    text-align: center; /* Centrowanie nagłówków */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
-/* Responsywność dla mniejszych ekranów */
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-
-  header h1 {
-    font-size: 1.5em;
-  }
-
-  .content {
-    padding: 10px;
-  }
+/* Opcjonalnie: Media queries dla bardzo wąskich ekranów */
+@media (max-width: 600px) {
+    body {
+        font-size: 90%; /* Zmniejszenie rozmiaru tekstu na małych ekranach*/
+    }
 }
 
-/* Ustawienia ogólne */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+/* Specyficzny styl dla kontenera */
+.main-content {
+    width: 100%; /* Pełna szerokość */
+    padding: 1rem; /* Dodatkowe marginesy wewnętrzne */
 }
-
-/* Kontener */
-.container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Styl nagłówka */
-header {
-  background: #333;
-  color: #fff;
-  padding: 20px 0;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 2em;
-}
-
-/* Styl zawartości */
-.content {
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-}
-
-/* Styl dla tabel */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table, th, td {
-  border: 1px solid #ddd;
-}
-
-th, td {
-  padding: 10px;
-  text-align: left;
-}
-
-/* Styl dla obrazów */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Responsywność dla mniejszych ekranów */
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-
-  header h1 {
-    font-size: 1.5em;
-  }
-
-  .content {
-    padding: 10px;
-  }
-}
-
