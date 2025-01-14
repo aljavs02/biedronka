@@ -216,7 +216,9 @@ summary(cf)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Wizualizacja wyników walidacji
-plot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
+par(cex.main = 2.5, cex.lab = 2.5, cex.axis = 2.5)
+barplot(cf, main="Walidacja obliczeń dla Total i dochodu")
+
 # Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
 super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
 
