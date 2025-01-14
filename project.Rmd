@@ -47,6 +47,7 @@ library(tseries)
 library(ggpubr)
 library(corrplot)
 library(kableExtra)
+library(RColorBrewer)
 ```
 
 ```{r, echo=FALSE}
@@ -60,7 +61,7 @@ super <- read.csv("supermarket_new.csv")
 
 Zbiór danych supermarket_new zawiera następujące zmienne:
   
-  ```{r, echo = F}
+```{r, echo = F}
 data_description <- data.frame(
   Zmienna = c("Invoice id", "Branch", "City", "Customer type", "Gender", 
               "Product line", "Unit price", "Quantity", "Tax", "Total", 
@@ -170,11 +171,11 @@ table(super$Rating)
 
 ```{r}
 ggplot(super, aes(x=Rating))+ 
-  geom_boxplot(fill="#dc567a")+
+  geom_boxplot(fill="#6a51a3")+
   coord_flip() +
   labs(title = "Wykres zmiennej Rating")+
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
-  theme_minimal(base_size = 12) + easy_center_title() 
+  theme_minimal(base_size = 12) + easy_center_title()
 ```
 
 Kolejno podjęto się eksploracji danych.
@@ -301,7 +302,8 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
-    legend.title = element_text(size = 11))   
+    legend.title = element_text(size = 11))+
+    scale_fill_manual(values = c("#2b8cbe", "#bae4bc", "#b2e2e2"))  
 ```
 
 Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w
@@ -318,7 +320,7 @@ delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   geom_density(alpha = 0.5, color = NA) +  
-  scale_fill_manual(values = c("darkorchid", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
+  scale_fill_manual(values = c("#ae017e", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
   labs(
     title = "Gęstość ocen klientów względem płci",
     x = "Ocena klientów",
@@ -328,7 +330,7 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
-    legend.title = element_text(size = 11))     
+    legend.title = element_text(size = 11))      
 ```
 
 Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w
@@ -345,7 +347,7 @@ natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   geom_density(alpha = 0.6, color = NA) +  
-  scale_fill_manual(values = c("blue", "green"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
+  scale_fill_manual(values = c("#238b45", "#b2e2e2"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
   labs(
     title = "Gęstość ocen klientów względem typu klienta",
     x = "Ocena klientów",
@@ -355,7 +357,7 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
-    legend.title = element_text(size = 11))  
+    legend.title = element_text(size = 11))   
 ```
 
 Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości
@@ -370,7 +372,7 @@ oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
-  scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
+  scale_fill_manual(values = c("bisque", "bisque4", "black"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
   labs(
     title = "Gęstość ocen klientów względem metody płatności",
     x = "Ocena klientów",
@@ -380,7 +382,7 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
-    legend.title = element_text(size = 11))  
+    legend.title = element_text(size = 11))   
 ```
 
 Na powyższym wykresia można zauważyć spójność ocen u klientów płacących
@@ -393,7 +395,7 @@ w okolicach 8, na co wskazuje szczyt gęstości.
 
 ```{r}
 ggplot(super, aes(x=Rating))+
-  geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
+  geom_histogram(bins=10, color='white', fill="seagreen")+
   labs(title = "Rozkład ocen klientów względem kategorii zakupowych produktów", x="Oceny ", y="Liczba osób")+
   theme(plot.title = element_text(hjust = 0.5, face = "plain"))+
   theme_minimal(base_size = 12)+
@@ -416,11 +418,11 @@ super %>%
   group_by(City) %>% 
   summarise(Mean.Rating=mean(Rating))  %>% 
   ggplot(aes(x=City, y=Mean.Rating))+
-  geom_col(fill="#f2c0cd", color= 'black')+
+  geom_col(fill="lightblue3", color= 'black')+
   geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
   labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
   theme_minimal(base_size = 12)+
-  easy_center_title() 
+  easy_center_title()  
 ```
 
 Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie
@@ -442,10 +444,13 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar("y") +
   geom_text(aes(label = paste0(round(Percentage, 1), "%")), position = position_stack(vjust = 0.5)) + 
-  labs(title="Udział linii produktowych w całkowitych kosztach")
-theme_minimal(base_size = 12) +
+  labs(title="Udział linii produktowych w całkowitych kosztach") +
+  theme_minimal(base_size = 12) +
   easy_center_title()+
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+   scale_fill_manual(values = c("#01665e", "#5ab4ac", "#c7eae5", "#f6e8c3", "#d8b365", "#8c510a"), 
+                     labels = c("Electronic accessories", "Fashion accessories", "Food and beverages",
+                                "Health and beauty", "Home and lifestyle", "Sports and travel"))
 ```
 
 Procentowy udział linii produktowych w całych kosztach jest zbliżony do
@@ -461,10 +466,11 @@ ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   geom_bar(stat = "identity") +
   labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
        x = "Sposób płatności", y = "Liczba produktów (Quantity)") +
-  scale_fill_brewer(palette = "Set3") +  # Wybór palety Set3
   theme_minimal(base_size = 12) +
   easy_center_title() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_fill_manual(values = c("#8856a7", "#9ebcda", "#e0ecf4"), 
+                     labels = c("Cash", "Credit card", "Ewallet"))
 ```
 
 Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje
@@ -500,7 +506,7 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     aes(x = Date, y = Value, shape = Type),
     size = 3) +
   facet_wrap(~Month, scales = "free_x") +
-  scale_color_brewer(palette = "Set2") +
+  scale_color_brewer(palette = "YlGnBu") +
   labs(
     title = "Dzienne przychody w oddziałach",
     x = "Data",
@@ -557,7 +563,7 @@ super %>%
                  labels = c("10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21"))) %>%
   group_by(m) %>% 
   summarise(gross_income = sum(gross.income, na.rm = TRUE)) %>%
-  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "#f2c0cd") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
+ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "#a1d99b") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
 ```
 
 Na podstawie przedstawionego wykresu można ustalić, że najbardziej
@@ -862,10 +868,10 @@ jarque.bera.test(super$Rating)
 
 plot.new()
 par(font.main = 1)
-hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="#f2c0cd", ylim = c(0, 0.25))
-lines(density(super$Rating), col = "#222222", lwd = 2)
-curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "#dc567a", lwd = 2, add = TRUE)
-legend("topright", legend = c("Density", "Normal Distribution"), col = c("#222222","#dc567a"), lwd = 2)
+hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="whitesmoke", ylim = c(0, 0.25))
+lines(density(super$Rating), col = "#2c7fb8", lwd = 2)
+curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "#7fcdbb", lwd = 2, add = TRUE)
+legend("topright", legend = c("Density", "Normal Distribution"), col = c("#2c7fb8", "#7fcdbb"), lwd = 2)
 
 
 ```
@@ -903,11 +909,12 @@ wartość bliska 0 wskazuje na brak monotonicznej zależności.
   **H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny
 od 0**
   
-  ```{r, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 cor.data <- super[, c(7:10, 14, 16:17)]
 super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
-corrplot(super.cor)
+corrplot(super.cor,
+         col = brewer.pal(n = 9, name = "BuPu"))
 ```
 
 ### Wnioski
@@ -938,7 +945,7 @@ mają nietypowe rozkłady, tak jak w przypadku danych ze zbioru
   
   **H1: mediany obu grup różnią się**
   
-  ```{r}
+```{r}
 wilcox.test(super$Rating, super$Total)
 ```
 
@@ -966,11 +973,11 @@ jednoczynnikowej analizy wariancji (ANOVA)
   
   *Ocena \~ Filia*
   
-  ```{r, echo=FALSE}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
-          color = "Branch", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          color = "Branch", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
   labs(title ="Wykresy pudełkowe Oceny i Filii") + easy_center_title()
 
@@ -978,22 +985,22 @@ ggboxplot(super, x = "Branch", y = "Rating",
 
 *Ocena \~ Sposób płatności*
   
-  ```{r, echo=FALSE}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
-          color = "Payment", palette = c("#00AFBB", "#dc567a", "#FC4E07"), 
+          color = "Payment", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12)  + 
   labs(title ="Wykresy pudełkowe Oceny i Sposobu płatności") + easy_center_title()
 ```
 
 *Ocena \~ Miasto*
   
-  ```{r, echo=FALSE}
+```{r, echo=FALSE}
 kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
-          color = "City", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          color = "City", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
   labs(title ="Wykresy pudełkowe Oceny i Miasta") + easy_center_title()
 ```
