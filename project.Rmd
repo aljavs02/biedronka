@@ -1,31 +1,26 @@
 ---
   title: "Supermarket"
-subtitle: "Analiza czynników istotnie wpływających na satysfakcje klienta"
-author: "A. Jaworska, G. Kuczyńska, M. Stalmach"
-output:
+  subtitle: "Analiza czynników istotnie wpływających na satysfakcje klienta"
+  author: "A. Jaworska, G. Kuczyńska, M. Stalmach"
+  output:
   rmdformats::readthedown:
   highlight: kate
-toc_float: true
-toc_depth: 4
-editor_options: 
+  toc_float: true
+  toc_depth: 4
+  editor_options: 
   markdown: 
   wrap: 72
 ---
-  
-  # Wstęp
-  
-  ## Opis problemu
-  
-  Celem projektu jest eksploatacja historycznych danych dotyczących
-sprzedaży w supermarketach oraz identyfikacja czynników mogących
-istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego
-doświadczenia zakupowego.
+
+# Wstęp
+
+## Opis problemu
+
+Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
 
 ## Baza danych
 
-Podstawą analizy był zbiór danych supermarket_new, zawierający dane
-pochodzące z jednej z historycznych sprzedaży firm supermarketów, która
-została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
+Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z jednej z historycznych sprzedaży firm supermarketów, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -60,7 +55,7 @@ super <- read.csv("supermarket_new.csv")
 ## Zmienne
 
 Zbiór danych supermarket_new zawiera następujące zmienne:
-  
+
 ```{r, echo = F}
 data_description <- data.frame(
   Zmienna = c("Invoice id", "Branch", "City", "Customer type", "Gender", 
@@ -108,11 +103,7 @@ data_description %>%
 str(super)
 ```
 
-Funkcja *str* pozwala na określenie struktury analizowanych danych.
-Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość
-(1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date
-zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy
-użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
+Funkcja *str* pozwala na określenie struktury analizowanych danych. Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość (1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
 
 ```{r, echo=FALSE}
 # zmiana formatu zmiennej Date
@@ -122,22 +113,14 @@ super <- super %>%
 
 # Data Cleansing & Data Wrangling
 
-Celem tego części jest kompleksowe oczyszczenie i przygotowanie danych z
-pliku "supermarket_new.csv". W szczególności skupimy się na
-identyfikacji i uzupełnieniu brakujących wartości w kluczowych
-kolumnach: City, Rating oraz gross.income. Dzięki zastosowaniu
-odpowiednich technik eksploracji, analizy oraz imputacji danych,
-walidacji końcowy zbiór będzie spójny, kompletny i gotowy do dalszych
-analiz.
+Celem tego części jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, walidacji końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 
 ```{r}
 # 2. Sprawdzenie brakujących danych
 n_miss(super)
 ```
 
-W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach
-zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest,
-jaki procent stanowią oraz jak je uzupełnić.
+W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest, jaki procent stanowią oraz jak je uzupełnić.
 
 ```{r}
 prop_miss(super) 
@@ -157,19 +140,14 @@ gg_miss_var(super)+theme(
   axis.text=element_text(size=14))
 ```
 
-Wyznaczono następujące braki w kolumnach: Rating (150), City (100),
-gross.income (150). Sprawdzono także -procent braków wstosunku do całego
-zbioru danych -podsumowano braki dla poszczególnych kolumn
--zwizualizowano braki w danych, również w kontekście kolumny Gender
--przedstawiono współwystępowanie braków w różnych kolumnach.
+Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków wstosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn -zwizualizowano braki w danych, również w kontekście kolumny Gender -przedstawiono współwystępowanie braków w różnych kolumnach.
 
 ```{r}
 # 3. Eksploracja danych
 table(super$Gender)
 table(super$Rating)
 ```
-
-```{r}
+```{r, warning=FALSE}
 ggplot(super, aes(x=Rating))+ 
   geom_boxplot(fill="#6a51a3")+
   coord_flip() +
@@ -187,11 +165,7 @@ table(super$Sex)
 unique(super$Rating)
 ```
 
-Została wyznaczona tabela częstości dla kolumn Gender, zostały
-wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany
-wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
-Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex
-oraz wyznaczona tabela częstości dla nowej kolumny Sex.
+Została wyznaczona tabela częstości dla kolumn Gender, zostały wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
 ```{r}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
@@ -214,14 +188,7 @@ table(super$City)
 super$City <- super_City_hd 
 ```
 
-W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je
-kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na
-końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały
-braki kolejnymi wartościami i zostały zaktualizowane indeksy braków.
-Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City
-według Branch - posortowanie danych w kolumnie City - uzupełnienie
-braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny
-City oraz podsumowanie oryginalnej kolumny City.
+W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City według Branch - posortowanie danych w kolumnie City - uzupełnienie braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
 
 ```{r}
 # 6. Imputacja braków w kolumnie Rating metodą KNN
@@ -231,19 +198,14 @@ super$Rating <- super_Rating
 
 ```
 
-W tym kroku została dokonana imputacja braków metodą KNN. Dla kolumny
-Rating zastosowano imputację braków metodą K-Nearest Neighbours,
-następnie zastąpiono oryginalną kolumnę imputowaną wersją.
+W tym kroku została dokonana imputacja braków metodą KNN. Dla kolumny Rating zastosowano imputację braków metodą K-Nearest Neighbours, następnie zastąpiono oryginalną kolumnę imputowaną wersją.
 
 ```{r}
 # 7. Imputacja braków w kolumnie gross.income na podstawie pozostałych kolumn
 super$gross.income <- super$Total-super$cogs
 ```
 
-W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono
-zależności między kolumnami i na ich podstawie uzupełniono braki w 150
-rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z
-większą precyzją.
+W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono zależności między kolumnami i na ich podstawie uzupełniono braki w 150 rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z większą precyzją.
 
 ```{r}
 # 8. Walidacja danych
@@ -263,34 +225,19 @@ super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
 
 ```
 
-W procesie walidacji dostrzeżono nieścisłości dla ponad 300 rekordów w
-odniesnieu do wartości Total. Zatem nadpisano tę kolumnę prawidłowym
-wzorem na jej zawartość na podstawie wartości z pozostałych kolumn.
-Proces oczyszczania oraz walidacji danych został zakończony. Zastosowane
-metody pozwoliły na uzupełnienie brakujących wartości w spójny i
-logiczny sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych
-analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
-analitycznych.
+W procesie walidacji dostrzeżono nieścisłości dla ponad 300 rekordów w odniesnieu do wartości Total. Zatem nadpisano tę kolumnę prawidłowym wzorem na jej zawartość na podstawie wartości z pozostałych kolumn. Proces oczyszczania oraz walidacji danych został zakończony. Zastosowane metody pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli analitycznych.
 
 # Wizualizacje
 
-W tej części zajmiemy się opracowaniem wizualizacji analizowanych
-danych.
+W tej części zajmiemy się opracowaniem wizualizacji analizowanych danych.
 
 ## Wizualizacja gęstości ocen względem zmiennych
 
-Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w
-odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ
-klienta czy metoda płatności. Wizualizacje gęstości umożliwiają
-zobrazowanie, jak oceny klientów rozkładają się w zależności od
-wybranych zmiennych. Wykres gęstości ilustruje rozkład zmiennej na osi
-numerycznej, gdzie wyższe wartości wskazują na obszary większego
-zagęszczenia. O bszary te oznaczają większą liczbę obserwacji dla danych
-wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
+Poniżej przedstawiono wizualizacje gęstości ocen klientów (rating) w odniesieniu do różnych cech, takich jak oddział sklepu, płeć, typ klienta czy metoda płatności. Wizualizacje gęstości umożliwiają zobrazowanie, jak oceny klientów rozkładają się w zależności od wybranych zmiennych. Wykres gęstości ilustruje rozkład zmiennej na osi numerycznej, gdzie wyższe wartości wskazują na obszary większego zagęszczenia. O bszary te oznaczają większą liczbę obserwacji dla danych wartości, co pozwala lepiej zrozumieć wzorce i różnice w danych.
 
 ### Wykres gęstości ocen klientów względem filii sklepu
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Rating, fill = factor(Branch))) +
   geom_density(alpha = 0.6, color = NA) +  
   labs(
@@ -306,18 +253,11 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
     scale_fill_manual(values = c("#2b8cbe", "#bae4bc", "#b2e2e2"))  
 ```
 
-Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w
-przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje
-doświadczenie zakupowe w tym zakresie. Filia B (kolor jasnoniebieski) ma
-bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować
-bardziej spójne oceny klientów w tej filii. Filia A (kolor żółty) i
-filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z
-delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno
-                                          niższych, jak i wyższych).
+Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje doświadczenie zakupowe w tym zakresie. Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii. Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
 
 ### Wykres gęstości ocen klientów względem płci
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   geom_density(alpha = 0.5, color = NA) +  
   scale_fill_manual(values = c("#ae017e", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
@@ -333,18 +273,11 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     legend.title = element_text(size = 11))      
 ```
 
-Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w
-przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w okolicach
-7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe
-jako "dobre". Mężczyźni mają nieco wyższe wartości gęstości w zakresie
-ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje
-doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają
-natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5
-                                                           oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
+Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre". Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
 
 ### Wykres gęstości ocen klientów względem typu klienta
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("#238b45", "#b2e2e2"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
@@ -360,16 +293,11 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     legend.title = element_text(size = 11))   
 ```
 
-Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości
-ocen w okolicach 7. Klienci bez karty (kolor zielony) również mają swój
-szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony.
-Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym
-szczytem gęstości wokół 7. Klienci bez karty mają bardziej zróżnicowane
-oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
+Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty (kolor zielony) również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony. Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7. Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
 ### Wykres gęstości ocen klientów względem metody płatności
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
   scale_fill_manual(values = c("bisque", "bisque4", "black"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
@@ -385,15 +313,11 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
     legend.title = element_text(size = 11))   
 ```
 
-Na powyższym wykresia można zauważyć spójność ocen u klientów płacących
-gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup
-znajduje się w okolicach 7. Klienci, którzy jako metodę płatności
-wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe
-w okolicach 8, na co wskazuje szczyt gęstości.
+Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
 
 ## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x=Rating))+
   geom_histogram(bins=10, color='white', fill="seagreen")+
   labs(title = "Rozkład ocen klientów względem kategorii zakupowych produktów", x="Oceny ", y="Liczba osób")+
@@ -403,17 +327,11 @@ ggplot(super, aes(x=Rating))+
 
 ```
 
-Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii
-sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów
-na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także
-jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza
-to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej
-zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący
-produkty należace do akcesoriów elektronicznych.
+Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowi byli klienci kupujący produkty należace do akcesoriów elektronicznych.
 
 ## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super %>% 
   group_by(City) %>% 
   summarise(Mean.Rating=mean(Rating))  %>% 
@@ -425,16 +343,11 @@ super %>%
   easy_center_title()  
 ```
 
-Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie
-zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje
-doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw.
-Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich
-satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces
-zakupowy jako zadowalający.
+Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
 
 ## Wykres procentowy udziału linii produktowych w całkowitych kosztach.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 product_costs <- super %>%
   group_by(Product.line) %>%
   summarise(Total_COGS = sum(cogs)) %>%
@@ -453,11 +366,7 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
                                 "Health and beauty", "Home and lifestyle", "Sports and travel"))
 ```
 
-Procentowy udział linii produktowych w całych kosztach jest zbliżony do
-siebie. Największy udział linii produktowej odnosi się do jedzenia i
-napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również
-zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria
-elektroniczne.
+Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
 
 ## Liczba zakupionych produktów w podziale na sposób płatności.
 
@@ -473,10 +382,7 @@ ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
                      labels = c("Cash", "Credit card", "Ewallet"))
 ```
 
-Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje
-się kolejno: - płacąc gotówką, - płacąc ewalletem - płacąc kartą
-kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz
-bardziej odchodzi się od płacenia gotówką.
+Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje się kolejno: - płacąc gotówką, - płacąc ewalletem - płacąc kartą kredytową. Są to dość zaskakujące wnioski zwazając na to, że coraz bardziej odchodzi się od płacenia gotówką.
 
 ## Wizualizacja dziennych przychodów w oddziałach z podziałem na miesiące
 
@@ -523,36 +429,15 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     legend.title = element_text(size = 11))
 ```
 
-Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów
-w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi
-oraz maksymalnymi.
+Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi oraz maksymalnymi.
 
-Spośród trzech analizowanych oddziałów, najlepiej radził sobie Oddział
-B, który wykazywał największą zmienność w przychodach. Sugeruje to
-większą dynamikę sprzedaży, a w szczytowych momentach przychody tego
-oddziału były najwyższe. Z kolei Oddział A radził sobie najgorzej, ze
-względu na największe wahania i przewagę niższych wartości, co wskazuje
-na mniej stabilne i niższe przychody w porównaniu do pozostałych
-oddziałów.
+Spośród trzech analizowanych oddziałów, najlepiej radził sobie Oddział B, który wykazywał największą zmienność w przychodach. Sugeruje to większą dynamikę sprzedaży, a w szczytowych momentach przychody tego oddziału były najwyższe. Z kolei Oddział A radził sobie najgorzej, ze względu na największe wahania i przewagę niższych wartości, co wskazuje na mniej stabilne i niższe przychody w porównaniu do pozostałych oddziałów.
 
-Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały
-następująco:
-  
-  -   Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano
-wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody
-w tym okresie. Natomiast najgorszym miesiącem był marzec,
-charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych
-szczytów, co sugeruje niższe przychody.
--   Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez
-większość miesiąca obserwowano stabilny wzrost przychodów, osiągając
-szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym
-występowały spore wahania przychodów, bez wyraźnych długotrwałych
-szczytów.
--   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i
-wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo
-stabilnych przychodów, okazał się najgorszym miesiącem, choć
-zanotowano lekki wzrost w środkowej jego części. \## Wizualizacja
-przedstawiająca najbardzej dochodowe pory dnia
+Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały następująco:
+
+-   Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
+-   Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
+-   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części. \## Wizualizacja przedstawiająca najbardzej dochodowe pory dnia
 
 ```{r, }
 super <- super %>%
@@ -566,12 +451,7 @@ super %>%
 ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "#a1d99b") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
 ```
 
-Na podstawie przedstawionego wykresu można ustalić, że najbardziej
-dochodwy okres dla supermarketu występuje między godzinami 19 a 20.
-Przedstawiony wykres użyteczny może okazać się przy ustalaniu i
-modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
-Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej
-godzinie otwarcia sklepu.
+Na podstawie przedstawionego wykresu można ustalić, że najbardziej dochodwy okres dla supermarketu występuje między godzinami 19 a 20. Przedstawiony wykres użyteczny może okazać się przy ustalaniu i modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy. Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej godzinie otwarcia sklepu.
 
 # Statystyki opisowe
 
@@ -664,15 +544,10 @@ super %>%
   row_spec(c(1, 3, 5), bold = F, background = "#fbeaee")
 ```
 
--   Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co
-sugeruje, że ta kategoria produktów przynosi największe dochody.
--   Najniższa średnia dochodu brutto: Grupa "Fashion accessories"
-(14.53).
--   Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z
-odchyleniem 12.12.
--   Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na
-prawostronne rozkłady, gdzie wiele wartości skupia się poniżej
-średniej z nielicznymi dużymi dochodami.
+-   Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
+-   Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
+-   Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
+-   Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -703,13 +578,9 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
--   Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn
-(14.80), co sugeruje, że kobiety generują większe zakupy.
--   Mediana również jest wyższa u kobiet, co świadczy o bardziej
-stabilnych zakupach o wyższych wartościach.
--   Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa
-                                            kurtoza), co sugeruje częstsze występowanie większych odchyleń od
-średnich wartości.
+-   Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
+-   Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
+-   Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -740,14 +611,9 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
--   Klienci z kartą członkowską (Member) generują wyższy średni dochód
-brutto (15.61) niż klienci bez karty (15.15).
--   Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów
-z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów
-normalnych jest bardziej asymetryczny z większą liczbą mniejszych
-transakcji.
--   Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co
-oznacza częstsze i większe odchylenia od średniej.
+-   Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
+-   Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
+-   Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
 
 ## Total
 
@@ -780,19 +646,9 @@ super %>%
   row_spec(2, bold = F, background = "#fbeaee")
 ```
 
-Analiza statystyk kosztów zakupów (Total) w trzech miastach sugeruje, że
-w Yangon znajduje się większa liczba klientów wydających więcej na
-zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa
-spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości
-kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji
-w porównaniu z Mandalay i Naypyitaw.
+Analiza statystyk kosztów zakupów (Total) w trzech miastach sugeruje, że w Yangon znajduje się większa liczba klientów wydających więcej na zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji w porównaniu z Mandalay i Naypyitaw.
 
-Dodatkowo, rozkład wydatków w Yangon jest mniej skośny (0,76), co
-sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty
-zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i
-Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część
-klientów wydaje mniej, co wynika z większej skośności rozkładów i
-niższych median.
+Dodatkowo, rozkład wydatków w Yangon jest mniej skośny (0,76), co sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część klientów wydaje mniej, co wynika z większej skośności rozkładów i niższych median.
 
 ## Ceny
 
@@ -825,32 +681,21 @@ super %>%
   row_spec(2, bold = F, background = "#fbeaee")
 ```
 
-Dane wskazują na zbliżone średnie ceny w różnych liniach produktów,
-które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion
-                                                             accessories). Rozproszenie cen, mierzone odchyleniem standardowym, jest
-stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość
-stabilne w obrębie każdej kategorii. Mediany są bliskie średnim, co
-sugeruje symetryczny rozkład cen. Niskie wartości skośności i kurtozy
-potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w
-analizowanych liniach produktów.
+Dane wskazują na zbliżone średnie ceny w różnych liniach produktów, które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion accessories). Rozproszenie cen, mierzone odchyleniem standardowym, jest stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość stabilne w obrębie każdej kategorii. Mediany są bliskie średnim, co sugeruje symetryczny rozkład cen. Niskie wartości skośności i kurtozy potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w analizowanych liniach produktów.
 
 # Wnioskowanie (testy statystyczne)
 
-W badaniu dotyczącym ocen doświadczeń zakupowych klientów przeprowadzono
-szereg testów statystycznych, mających na celu zbadanie związków między
-oceną, a różnymi zmiennymi zawartymi w analizowanym zbiorze danych
+W badaniu dotyczącym ocen doświadczeń zakupowych klientów przeprowadzono szereg testów statystycznych, mających na celu zbadanie związków między oceną, a różnymi zmiennymi zawartymi w analizowanym zbiorze danych
 
 ## Badanie normalności rozkładu
 
-W tej części zbadana zostanie normalność rozkładu na podstawie testów
-statystycznych oraz wykresu w postaci histogramu. Aby badanie zostało
-wykonane poprawnie należy przetestować poniższe hipotezy:
-  
-  **H0: rozkład jest normalny**
-  
-  **H1: rozkład nie jest normalny**
-  
-  ```{r, message=FALSE, warning=FALSE, echo=FALSE}
+W tej części zbadana zostanie normalność rozkładu na podstawie testów statystycznych oraz wykresu w postaci histogramu. Aby badanie zostało wykonane poprawnie należy przetestować poniższe hipotezy:
+
+**H0: rozkład jest normalny**
+
+**H1: rozkład nie jest normalny**
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 # Zestaw testów na normalność
 
 ## Shapiro-Wilk
@@ -878,37 +723,20 @@ legend("topright", legend = c("Density", "Normal Distribution"), col = c("#2c7fb
 
 ### Wnioski
 
-Na podstawie wyników wygenerowanych dzięki testom normalności można
-zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż
-0.05, a zatem istnieją istotne statystycznie różnice między rozkładem
-danych a rozkładem normalnym. Zgodnie z powyższym należy odrzucić
-hipotezę zerową mówiącą o normalności rozkładu.
+Na podstawie wyników wygenerowanych dzięki testom normalności można zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż 0.05, a zatem istnieją istotne statystycznie różnice między rozkładem danych a rozkładem normalnym. Zgodnie z powyższym należy odrzucić hipotezę zerową mówiącą o normalności rozkładu.
 
-Powyższe stwierdzenie potwierdza wykres, na którym widoczny jest
-symetryczny rozkład danych, jednak odbiegający od klasycznego rozkładu
-normalnego. Występują pewne odstępstwa w częstotliwościach w porównaniu
-do idealnego rozkładu normalnego (czerwona linia), a zatem wykres
-dodatkowo potwierdza konieczność odrzucenia H0.
+Powyższe stwierdzenie potwierdza wykres, na którym widoczny jest symetryczny rozkład danych, jednak odbiegający od klasycznego rozkładu normalnego. Występują pewne odstępstwa w częstotliwościach w porównaniu do idealnego rozkładu normalnego (czerwona linia), a zatem wykres dodatkowo potwierdza konieczność odrzucenia H0.
 
-Zważywszy na ustalony brak normalności danych w dalszej analizie należy
-wykorzystać testy nieparametryczne.
+Zważywszy na ustalony brak normalności danych w dalszej analizie należy wykorzystać testy nieparametryczne.
 
 ## Korelacja Spearmana
 
-Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji
-Pearsona, wykorzystywana do oceny siły i kierunku zależności między
-dwiema zmiennymi. Współczynnik korelacji Spearmana mierzy, jak dobrze
-monotonicznie (czyli w sposób ciągły rosnący lub malejący) zmieniają się
-wartości jednej zmiennej w zależności od drugiej. Jeśli współczynnik
-korelacji jest bliski 1 lub -1, oznacza to silny związek, natomiast
-wartość bliska 0 wskazuje na brak monotonicznej zależności.
+Korelacja rang Spearmana to nieparametryczna alternatywa dla korelacji Pearsona, wykorzystywana do oceny siły i kierunku zależności między dwiema zmiennymi. Współczynnik korelacji Spearmana mierzy, jak dobrze monotonicznie (czyli w sposób ciągły rosnący lub malejący) zmieniają się wartości jednej zmiennej w zależności od drugiej. Jeśli współczynnik korelacji jest bliski 1 lub -1, oznacza to silny związek, natomiast wartość bliska 0 wskazuje na brak monotonicznej zależności.
 
-**H0: zmienne są niezależne, a współczynnik korelacji Spearmana wynosi
-0**
-  
-  **H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny
-od 0**
-  
+**H0: zmienne są niezależne, a współczynnik korelacji Spearmana wynosi 0**
+
+**H1: zmienne są zależne, a współczynnik korelacji Spearmana jest różny od 0**
+
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 cor.data <- super[, c(7:10, 14, 16:17)]
 super.cor <- round(cor(cor.data, method = "spearman"), 2)
@@ -919,60 +747,34 @@ corrplot(super.cor,
 
 ### Wnioski
 
-Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych
-produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz
-dochód brutto są ze sobą silnie powiązane, co wynika z ich
-bezpośredniego związku z transakcjami finansowymi. Wyższa cena
-jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych
-wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację
-z innymi zmiennymi, sugerując, że są one bardziej subiektywne i
-niezależne od wyników transakcji. W rezultacie, zależności między
-zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy
-oceny klientów pozostają mniej związane z tymi parametrami.
+Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz dochód brutto są ze sobą silnie powiązane, co wynika z ich bezpośredniego związku z transakcjami finansowymi. Wyższa cena jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację z innymi zmiennymi, sugerując, że są one bardziej subiektywne i niezależne od wyników transakcji. W rezultacie, zależności między zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy oceny klientów pozostają mniej związane z tymi parametrami.
 
 ## Test Wilcoxona
 
-Test Wilcoxona jest testem statystycznym zaliczanym do metod
-nieparametrycznych, wykorzystywanym do porównywania dwóch grup,
-zwłaszcza gdy dane nie spełniają założeń normalności rozkładu. Test
-analizuje rangowe wartości danych, co pozwala mu działać niezależnie od
-rozkładu zmiennych i sprawia, że jest mniej podatny na wpływ wartości
-odstających. Dzięki temu wykorzystywany jest w przypadkach, gdy dane
-mają nietypowe rozkłady, tak jak w przypadku danych ze zbioru
-*superstore*.
+Test Wilcoxona jest testem statystycznym zaliczanym do metod nieparametrycznych, wykorzystywanym do porównywania dwóch grup, zwłaszcza gdy dane nie spełniają założeń normalności rozkładu. Test analizuje rangowe wartości danych, co pozwala mu działać niezależnie od rozkładu zmiennych i sprawia, że jest mniej podatny na wpływ wartości odstających. Dzięki temu wykorzystywany jest w przypadkach, gdy dane mają nietypowe rozkłady, tak jak w przypadku danych ze zbioru *superstore*.
 
 **H0: mediany obu grup są równe**
-  
-  **H1: mediany obu grup różnią się**
-  
+
+**H1: mediany obu grup różnią się**
+
 ```{r}
 wilcox.test(super$Rating, super$Total)
 ```
 
 ### Wnioski
 
-Istnieje znacząca różnica między oceną doświadczenia zakupowego klienta
-(Rating) a całkowitą kwotą zapłaconą przez klienta (Total). Hipoteza
-zerowa w teście Wilcoxona zakłada, że mediana różnicy między dwoma
-grupami wynosi zero, co oznacza brak istotnej różnicy między nimi.
-P-value bliskie zeru wskazuje, że różnica jest istotna statystycznie.
-Dodatkowo otrzymany wynik W = 0 podkreśla ekstremalność tej różnicy —
-występuje znaczna rozbieżność między rozkładami zmiennych.Oznacza to, że
-ocena klienta nie była zależna od kwoty jaką zapłacił w sklepie.
+Istnieje znacząca różnica między oceną doświadczenia zakupowego klienta (Rating) a całkowitą kwotą zapłaconą przez klienta (Total). Hipoteza zerowa w teście Wilcoxona zakłada, że mediana różnicy między dwoma grupami wynosi zero, co oznacza brak istotnej różnicy między nimi. P-value bliskie zeru wskazuje, że różnica jest istotna statystycznie. Dodatkowo otrzymany wynik W = 0 podkreśla ekstremalność tej różnicy — występuje znaczna rozbieżność między rozkładami zmiennych.Oznacza to, że ocena klienta nie była zależna od kwoty jaką zapłacił w sklepie.
 
 ## Test Kruskala-Wallisa
 
-Test Kruskala-Wallisa to nieparametryczny test statystyczny używany do
-porównywania median więcej niż dwóch grup niezależnych, gdy nie można
-założyć normalności rozkładu danych. Jest alternatywą dla
-jednoczynnikowej analizy wariancji (ANOVA)
+Test Kruskala-Wallisa to nieparametryczny test statystyczny używany do porównywania median więcej niż dwóch grup niezależnych, gdy nie można założyć normalności rozkładu danych. Jest alternatywą dla jednoczynnikowej analizy wariancji (ANOVA)
 
 **H0: mediany wszystkich porównywanych grup są równe**
-  
-  **H1: przynajmniej jedna z median różni się od pozostałych**
-  
-  *Ocena \~ Filia*
-  
+
+**H1: przynajmniej jedna z median różni się od pozostałych**
+
+*Ocena \~ Filia*
+
 ```{r, echo=FALSE}
 kruskal.test(Rating ~ Branch, super)
 
@@ -984,7 +786,7 @@ ggboxplot(super, x = "Branch", y = "Rating",
 ```
 
 *Ocena \~ Sposób płatności*
-  
+
 ```{r, echo=FALSE}
 kruskal.test(Rating ~ Payment, super)
 
@@ -995,7 +797,7 @@ ggboxplot(super, x = "Payment", y = "Rating",
 ```
 
 *Ocena \~ Miasto*
-  
+
 ```{r, echo=FALSE}
 kruskal.test(Rating ~ City, super)
 
@@ -1007,30 +809,19 @@ ggboxplot(super, x = "City", y = "Rating",
 
 ### Wnioski
 
-We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło
-więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy
-wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma
-istotnych statystycznie różnic między:
-  
-  -   medianami ocen doświadczenia zakupowego w trzech filiach
--   medianami ocen doświadczenia zakupowego względem trzech możliwych
-sposobów płatności;
--   medianami ocen doświadczenia zakupowego względem miast
-funkcjonowania sklepów.
+We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma istotnych statystycznie różnic między:
 
-Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób
-płatności nie mają istotnego wpływu na finalną ocenę zakupów przez
-klienta. Potwierdzeniem powyższych wyników są również wygenerowane
-wykresy pudełkowe, w których zakresy kwartylów są do siebie znacznie
-zbliżone.
+-   medianami ocen doświadczenia zakupowego w trzech filiach
+-   medianami ocen doświadczenia zakupowego względem trzech możliwych sposobów płatności;
+-   medianami ocen doświadczenia zakupowego względem miast funkcjonowania sklepów.
+
+Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób płatności nie mają istotnego wpływu na finalną ocenę zakupów przez klienta. Potwierdzeniem powyższych wyników są również wygenerowane wykresy pudełkowe, w których zakresy kwartylów są do siebie znacznie zbliżone.
 
 # Testy porównawcze
 
 ## Test ANOVA dla filii sklepu
 
-Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w
-sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice
-pomiędzy średnimi kilku grup.
+Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup.
 
 ```{r}
 super$Branch <- as.factor(super$Branch)
@@ -1040,12 +831,7 @@ summary(anova_result)
 
 ### Wnioski
 
-Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność
-pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo
-niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto
-między poszczególnymi filiami są bardzo małe, więc są nieistotne
-statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności
-(zazwyczaj jest to 0.05).
+Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
 
 ## Test ANOVA dla wybranej metody płatności
 
