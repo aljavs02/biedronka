@@ -142,10 +142,9 @@ gg_miss_var(super)+theme(
 
 Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków wstosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn -zwizualizowano braki w danych, również w kontekście kolumny Gender -przedstawiono współwystępowanie braków w różnych kolumnach.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 # 3. Eksploracja danych
 table(super$Gender)
-table(super$Rating)
 ```
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x=Rating))+ 
@@ -161,8 +160,6 @@ Kolejno podjęto się eksploracji danych.
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 4. Przekształcenia danych
 super$Sex <- factor(super$Gender)
-table(super$Sex) 
-unique(super$Rating)
 ```
 
 Została wyznaczona tabela częstości dla kolumn Gender, zostały wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
