@@ -256,7 +256,7 @@ summary(cf)
 
 ```{r}
 # Wizualizacja wyników walidacji
-barplot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
+plot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
 # Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
 super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
 
@@ -742,6 +742,91 @@ kbl(
     transakcji.
 -   Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co
     oznacza częstsze i większe odchylenia od średniej.
+
+## Total
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(Total, City) %>%
+  group_by(City) %>%
+  summarize(Min=min(Total),
+            Max=max(Total),
+            średnia=mean(Total),
+            odchylenie = sd(Total),
+            mediana = median(Total),
+            Q1=quantile(Total,0.25),
+            Q3=quantile(Total,0.75),
+            Skośność=skewness(Total),
+            Kurtoza=kurtosis(Total)) %>%
+kbl(
+    caption = "Statystyki rozkładu Total wg miasta.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Miasto", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(2, bold = F, background = "#fbeaee")
+```
+
+Analiza statystyk kosztów zakupów (Total) w trzech miastach sugeruje, że
+w Yangon znajduje się większa liczba klientów wydających więcej na
+zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa
+spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości
+kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji
+w porównaniu z Mandalay i Naypyitaw.
+
+Dodatkowo, rozkład wydatków w Yangon jest mniej skośny (0,76), co
+sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty
+zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i
+Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część
+klientów wydaje mniej, co wynika z większej skośności rozkładów i
+niższych median.
+
+## Ceny
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+super %>% 
+  select(Unit.price, Product.line) %>%
+  group_by(Product.line) %>%
+  summarize(Min=min(Unit.price),
+            Max=max(Unit.price),
+            średnia=mean(Unit.price),
+            odchylenie = sd(Unit.price),
+            mediana = median(Unit.price),
+            Q1=quantile(Unit.price,0.25),
+            Q3=quantile(Unit.price,0.75),
+            Skośność=skewness(Unit.price),
+            Kurtoza=kurtosis(Unit.price)) %>%
+kbl(
+    caption = "Statystyki rozkładu cen wg linii produktów.",
+    digits = 2,
+    align = "lccccccccc",
+    col.names = c("Linia produktów", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
+  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
+  row_spec(2, bold = F, background = "#fbeaee")
+```
+
+Dane wskazują na zbliżone średnie ceny w różnych liniach produktów,
+które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion
+accessories). Rozproszenie cen, mierzone odchyleniem standardowym, jest
+stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość
+stabilne w obrębie każdej kategorii. Mediany są bliskie średnim, co
+sugeruje symetryczny rozkład cen. Niskie wartości skośności i kurtozy
+potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w
+analizowanych liniach produktów.
 
 # Wnioskowanie (testy statystyczne)
 
