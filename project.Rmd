@@ -7,11 +7,12 @@ output:
     highlight: kate
     toc_float: true
     toc_depth: 4
+    css: "custom_styles.css"
 editor_options: 
   markdown: 
     wrap: 72
 ---
-
+<div class = "main-content">
 # Wstęp
 
 ## Opis problemu
@@ -47,6 +48,7 @@ library(tseries)
 library(ggpubr)
 library(corrplot)
 library(kableExtra)
+library(RColorBrewer)
 ```
 
 ```{r, echo=FALSE}
@@ -101,7 +103,6 @@ data_description %>%
   row_spec(seq(1, nrow(data_description), 2), background = "#f2c0cd") %>%  # Kolory co drugiego wiersza
   row_spec(seq(2, nrow(data_description), 2), background = "#fbeaee")
 ```
-
 ```{r}
 # struktura danych
 str(super)
@@ -121,76 +122,73 @@ super <- super %>%
 
 # Data Cleansing & Data Wrangling
 
-Celem tego części jest kompleksowe oczyszczenie i przygotowanie danych z
-pliku "supermarket_new.csv". W szczególności skupimy się na
+Celem tego skryptu jest kompleksowe oczyszczenie i przygotowanie danych
+z pliku "supermarket_new.csv". W szczególności skupimy się na
 identyfikacji i uzupełnieniu brakujących wartości w kluczowych
 kolumnach: City, Rating oraz gross.income. Dzięki zastosowaniu
-odpowiednich technik eksploracji, analizy oraz imputacji danych,
-walidacji końcowy zbiór będzie spójny, kompletny i gotowy do dalszych
-analiz.
+odpowiednich technik eksploracji, analizy oraz imputacji danych, końcowy
+zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 
 ```{r}
 # 2. Sprawdzenie brakujących danych
-n_miss(super)
+sum(is.na(super$City)==TRUE)
+sum(is.na(super$Rating)==TRUE)
+sum(is.na(super$gross.income)==TRUE)
 ```
 
-W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach
-zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest,
-jaki procent stanowią oraz jak je uzupełnić.
+Następnie została:
+
+-   sprawdzona liczba braków w kolumnie City
+-   sprawdzona liczba braków w kolumnie Rating
+-   sprawdzona liczba braków w kolumnie gross.income
+
+Wynik: Wyznaczono następujące braki w kolumnach: Rating (150), City
+(100), gross.income (150).
 
 ```{r}
+# Dalsza analiza braków w zbiorze
+n_miss(super) 
 prop_miss(super) 
-```
-
-```{r}
+miss_var_summary(super)
 vis_miss(super)
+gg_miss_fct(super, fct = Gender)
+gg_miss_upset(super) 
 ```
 
-```{r}
-gg_miss_fct(super, fct = Gender)+theme(
-  axis.text=element_text(size=14))
-```
-
-```{r}
-gg_miss_var(super)+theme(
-  axis.text=element_text(size=14))
-```
-
-Wyznaczono następujące braki w kolumnach: Rating (150), City (100),
-gross.income (150). Sprawdzono także -procent braków wstosunku do całego
-zbioru danych -podsumowano braki dla poszczególnych kolumn
--zwizualizowano braki w danych, również w kontekście kolumny Gender
--przedstawiono współwystępowanie braków w różnych kolumnach.
+W kolejnym kroku w dalszym ciągu była analiza braków w zbiorze, a w tym
+wyznaczenie: - liczby wszystkich braków w zbiorze - procentu braków w
+staosunku do całego zbioru danych - podsumowania braków dla
+poszczególnych kolumn - wizualizacji braków w danych - analizy braków w
+kontekście kolumny Gender - wizualizacji współwystępowania braków w
+różnych kolumnach
 
 ```{r}
 # 3. Eksploracja danych
 table(super$Gender)
-table(super$Rating)
-```
-
-```{r}
+table(super$Rating)  
+unique(super$Rating)
 ggplot(super, aes(x=Rating))+ 
-  geom_boxplot(fill="#dc567a")+
+  geom_boxplot(fill="#6a51a3")+
   coord_flip() +
   labs(title = "Wykres zmiennej Rating")+
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
-  theme_minimal(base_size = 12) + easy_center_title() 
+  theme_minimal(base_size = 12) + easy_center_title()
+  
 ```
 
-Kolejno podjęto się eksploracji danych.
+Kolejno została podjęta eksploracja danych. Została wyznaczona tabela
+częstości dla kolumn Gender oraz Rating, zostały wyświetlone unikalne
+wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla
+kolumny Rating z zaznaczeniem wartości odstających.
 
 ```{r}
 # 4. Przekształcenia danych
 super$Sex <- factor(super$Gender)
 table(super$Sex) 
-unique(super$Rating)
 ```
 
-Została wyznaczona tabela częstości dla kolumn Gender, zostały
-wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany
-wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających.
-Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex
-oraz wyznaczona tabela częstości dla nowej kolumny Sex.
+Została dokonana konwersja kolumny Gender na zmienną kategoryczną jako
+Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
 ```{r}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
@@ -230,19 +228,25 @@ super$Rating <- super_Rating
  
 ```
 
-W tym kroku została dokonana imputacja braków metodą KNN. Dla kolumny
-Rating zastosowano imputację braków metodą K-Nearest Neighbours,
-następnie zastąpiono oryginalną kolumnę imputowaną wersją.
-
 ```{r}
 # 7. Imputacja braków w kolumnie gross.income na podstawie pozostałych kolumn
 super$gross.income <- super$Total-super$cogs
 ```
 
+W kolejnym kroku została dokonana imputacja braków metodą KNN. Dla
+kolumny Rating zastosowano imputację braków metodą K-Nearest Neighbours,
+następnie zastąpiono oryginalną kolumnę imputowaną wersją.
+
 W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono
 zależności między kolumnami i na ich podstawie uzupełniono braki w 150
 rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z
 większą precyzją.
+
+Proces oczyszczania danych został zakończony. Zastosowane metody
+pozwoliły na uzupełnienie brakujących wartości w spójny i logiczny
+sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych analiz,
+co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
+analitycznych.
 
 ```{r}
 # 8. Walidacja danych
@@ -256,20 +260,11 @@ summary(cf)
 
 ```{r}
 # Wizualizacja wyników walidacji
-plot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
+barplot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
 # Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
 super$Total <- super$Unit.price*super$Quantity+super$Tax.5.
 
 ```
-
-W procesie walidacji dostrzeżono nieścisłości dla ponad 300 rekordów w
-odniesnieu do wartości Total. Zatem nadpisano tę kolumnę prawidłowym
-wzorem na jej zawartość na podstawie wartości z pozostałych kolumn.
-Proces oczyszczania oraz walidacji danych został zakończony. Zastosowane
-metody pozwoliły na uzupełnienie brakujących wartości w spójny i
-logiczny sposób. Zbiór danych jest teraz kompletny i gotowy do dalszych
-analiz, co pozwala na precyzyjne wyciąganie wniosków i tworzenie modeli
-analitycznych.
 
 # Wizualizacje
 
@@ -301,7 +296,8 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "plain"),  
     legend.position = "top",
-    legend.title = element_text(size = 11))   
+    legend.title = element_text(size = 11))+
+    scale_fill_manual(values = c("#2b8cbe", "#bae4bc", "#b2e2e2"))
 ```
 
 Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w
@@ -318,7 +314,7 @@ niższych, jak i wyższych).
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Sex))) +
   geom_density(alpha = 0.5, color = NA) +  
-  scale_fill_manual(values = c("darkorchid", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
+  scale_fill_manual(values = c("#ae017e", "cyan"), labels = c("Kobiety", "Mężczyźni")) + 
   labs(
     title = "Gęstość ocen klientów względem płci",
     x = "Ocena klientów",
@@ -345,7 +341,7 @@ oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
   geom_density(alpha = 0.6, color = NA) +  
-  scale_fill_manual(values = c("blue", "green"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
+  scale_fill_manual(values = c("#238b45", "#b2e2e2"), labels = c("Klient z kartą członkowską", "Klient bez karty członkowskiej")) + 
   labs(
     title = "Gęstość ocen klientów względem typu klienta",
     x = "Ocena klientów",
@@ -370,7 +366,7 @@ oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 ```{r}
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
-  scale_fill_manual(values = c("orange", "cyan", "darkorchid"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
+  scale_fill_manual(values = c("bisque", "bisque4", "black"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
   labs(
     title = "Gęstość ocen klientów względem metody płatności",
     x = "Ocena klientów",
@@ -393,7 +389,7 @@ w okolicach 8, na co wskazuje szczyt gęstości.
 
 ```{r}
 ggplot(super, aes(x=Rating))+
-  geom_histogram(bins=10, color='white', fill="Dark Sea Green 3")+
+  geom_histogram(bins=10, color='white', fill="seagreen")+
   labs(title = "Rozkład ocen klientów względem kategorii zakupowych produktów", x="Oceny ", y="Liczba osób")+
   theme(plot.title = element_text(hjust = 0.5, face = "plain"))+
   theme_minimal(base_size = 12)+
@@ -416,7 +412,7 @@ super %>%
   group_by(City) %>% 
   summarise(Mean.Rating=mean(Rating))  %>% 
   ggplot(aes(x=City, y=Mean.Rating))+
-  geom_col(fill="#f2c0cd", color= 'black')+
+  geom_col(fill="lightblue3", color= 'black')+
   geom_text(aes(label=round(Mean.Rating,2)), nudge_y = 0.2 )+
   labs(title="Zadowolenie klientów", x="Miasto", y="Średnia ocena")+
   theme_minimal(base_size = 12)+
@@ -442,10 +438,13 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar("y") +
   geom_text(aes(label = paste0(round(Percentage, 1), "%")), position = position_stack(vjust = 0.5)) + 
-  labs(title="Udział linii produktowych w całkowitych kosztach")
+  labs(title="Udział linii produktowych w całkowitych kosztach") +
   theme_minimal(base_size = 12) +
   easy_center_title()+
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+   scale_fill_manual(values = c("#01665e", "#5ab4ac", "#c7eae5", "#f6e8c3", "#d8b365", "#8c510a"), 
+                     labels = c("Electronic accessories", "Fashion accessories", "Food and beverages",
+                                "Health and beauty", "Home and lifestyle", "Sports and travel"))
 ```
 
 Procentowy udział linii produktowych w całych kosztach jest zbliżony do
@@ -461,10 +460,12 @@ ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   geom_bar(stat = "identity") +
   labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
        x = "Sposób płatności", y = "Liczba produktów (Quantity)") +
-  scale_fill_brewer(palette = "Set3") +  # Wybór palety Set3
   theme_minimal(base_size = 12) +
   easy_center_title() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_fill_manual(values = c("#8856a7", "#9ebcda", "#e0ecf4"), 
+                     labels = c("Cash", "Credit card", "Ewallet"))
+  
 ```
 
 Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje
@@ -500,7 +501,7 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     aes(x = Date, y = Value, shape = Type),
     size = 3) +
   facet_wrap(~Month, scales = "free_x") +
-  scale_color_brewer(palette = "Set2") +
+  scale_color_brewer(palette = "YlGnBu") +
   labs(
     title = "Dzienne przychody w oddziałach",
     x = "Data",
@@ -545,9 +546,7 @@ następująco:
 -   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i
     wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo
     stabilnych przychodów, okazał się najgorszym miesiącem, choć
-    zanotowano lekki wzrost w środkowej jego części. \## Wizualizacja
-    przedstawiająca najbardzej dochodowe pory dnia
-
+    zanotowano lekki wzrost w środkowej jego części.
 ```{r, }
 super <- super %>%
   mutate(Time_numeric = hour(hms(Time)) + minute(hms(Time)) / 60 + second(hms(Time)) / 3600)
@@ -557,19 +556,14 @@ super %>%
                  labels = c("10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21"))) %>%
   group_by(m) %>% 
   summarise(gross_income = sum(gross.income, na.rm = TRUE)) %>%
-  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "#f2c0cd") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
+  ggplot(aes(x = m, y = gross_income)) + geom_bar(stat = "identity", fill = "#a1d99b") + labs(title = "Dochodowość według pory dnia", x = "Pora dnia", y = "Dochód") + theme_minimal(base_size = 12) + easy_center_title()
 ```
-
-Na podstawie przedstawionego wykresu można ustalić, że najbardziej
-dochodwy okres dla supermarketu występuje między godzinami 19 a 20.
-Przedstawiony wykres użyteczny może okazać się przy ustalaniu i
-modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
-Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej
-godzinie otwarcia sklepu.
+Na podstawie przedstawionego wykresu można ustalić, że najbardziej dochodwy okres dla supermarketu występuje między godzinami 19 a 20. Przedstawiony wykres użyteczny może okazać się przy ustalaniu i modyfikacji godzin otwarcia sklepu np. w dni świąteczne, bądź weekendy.
+Najmniej dochodowy moment dla supermarketu znajduje się w ostatniej godzinie otwarcia sklepu.
 
 # Statystyki opisowe
 
-## Dochód
+## gross.income
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -657,16 +651,10 @@ kbl(
   row_spec(c(2, 4, 6), bold = F, background = "#f2c0cd", color = "#222222") %>%    
   row_spec(c(1, 3, 5), bold = F, background = "#fbeaee")
 ```
-
--   Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co
-    sugeruje, że ta kategoria produktów przynosi największe dochody.
--   Najniższa średnia dochodu brutto: Grupa "Fashion accessories"
-    (14.53).
--   Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z
-    odchyleniem 12.12.
--   Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na
-    prawostronne rozkłady, gdzie wiele wartości skupia się poniżej
-    średniej z nielicznymi dużymi dochodami.
+- Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
+- Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
+- Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
+- Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -697,13 +685,9 @@ kbl(
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
--   Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn
-    (14.80), co sugeruje, że kobiety generują większe zakupy.
--   Mediana również jest wyższa u kobiet, co świadczy o bardziej
-    stabilnych zakupach o wyższych wartościach.
--   Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa
-    kurtoza), co sugeruje częstsze występowanie większych odchyleń od
-    średnich wartości.
+- Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
+- Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
+- Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -733,100 +717,10 @@ kbl(
   row_spec(2, bold = F, background = "#f2c0cd", color = "#222222") %>%    
   row_spec(1, bold = F, background = "#fbeaee")
 ```
+- Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
+- Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
+- Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
 
--   Klienci z kartą członkowską (Member) generują wyższy średni dochód
-    brutto (15.61) niż klienci bez karty (15.15).
--   Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów
-    z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów
-    normalnych jest bardziej asymetryczny z większą liczbą mniejszych
-    transakcji.
--   Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co
-    oznacza częstsze i większe odchylenia od średniej.
-
-## Total
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-super %>% 
-  select(Total, City) %>%
-  group_by(City) %>%
-  summarize(Min=min(Total),
-            Max=max(Total),
-            średnia=mean(Total),
-            odchylenie = sd(Total),
-            mediana = median(Total),
-            Q1=quantile(Total,0.25),
-            Q3=quantile(Total,0.75),
-            Skośność=skewness(Total),
-            Kurtoza=kurtosis(Total)) %>%
-kbl(
-    caption = "Statystyki rozkładu Total wg miasta.",
-    digits = 2,
-    align = "lccccccccc",
-    col.names = c("Miasto", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed", "bordered"),
-    full_width = FALSE,
-    position = "center"
-  ) %>%
-  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
-  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
-  row_spec(2, bold = F, background = "#fbeaee")
-```
-
-Analiza statystyk kosztów zakupów (Total) w trzech miastach sugeruje, że
-w Yangon znajduje się większa liczba klientów wydających więcej na
-zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa
-spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości
-kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji
-w porównaniu z Mandalay i Naypyitaw.
-
-Dodatkowo, rozkład wydatków w Yangon jest mniej skośny (0,76), co
-sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty
-zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i
-Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część
-klientów wydaje mniej, co wynika z większej skośności rozkładów i
-niższych median.
-
-## Ceny
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-super %>% 
-  select(Unit.price, Product.line) %>%
-  group_by(Product.line) %>%
-  summarize(Min=min(Unit.price),
-            Max=max(Unit.price),
-            średnia=mean(Unit.price),
-            odchylenie = sd(Unit.price),
-            mediana = median(Unit.price),
-            Q1=quantile(Unit.price,0.25),
-            Q3=quantile(Unit.price,0.75),
-            Skośność=skewness(Unit.price),
-            Kurtoza=kurtosis(Unit.price)) %>%
-kbl(
-    caption = "Statystyki rozkładu cen wg linii produktów.",
-    digits = 2,
-    align = "lccccccccc",
-    col.names = c("Linia produktów", "Min", "Max", "Średnia", "Odchylenie std.", "Mediana", "Q1", "Q3", "Skośność", "Kurtoza")
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed", "bordered"),
-    full_width = FALSE,
-    position = "center"
-  ) %>%
-  row_spec(0, bold = TRUE, background = "#dc567a", color = "white") %>%  
-  row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
-  row_spec(2, bold = F, background = "#fbeaee")
-```
-
-Dane wskazują na zbliżone średnie ceny w różnych liniach produktów,
-które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion
-accessories). Rozproszenie cen, mierzone odchyleniem standardowym, jest
-stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość
-stabilne w obrębie każdej kategorii. Mediany są bliskie średnim, co
-sugeruje symetryczny rozkład cen. Niskie wartości skośności i kurtozy
-potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w
-analizowanych liniach produktów.
 
 # Wnioskowanie (testy statystyczne)
 
@@ -855,17 +749,15 @@ lillie.test(super$Rating)
 
 ## Cramer-von Mises normality test
 jarque.bera.test(super$Rating)
-```
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE}
 # Histogram
 
 plot.new()
 par(font.main = 1)
-hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="#f2c0cd", ylim = c(0, 0.25))
-lines(density(super$Rating), col = "#222222", lwd = 2)
-curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "#dc567a", lwd = 2, add = TRUE)
-legend("topright", legend = c("Density", "Normal Distribution"), col = c("#222222","#dc567a"), lwd = 2)
+hist(super$Rating, freq = FALSE, main = "Histogram zmiennej Rating z krzywą gęstości", xlab = "Rating", col="whitesmoke", ylim = c(0, 0.25))
+lines(density(super$Rating), col = "#2c7fb8", lwd = 2)
+curve(dnorm(x, mean = mean(super$Rating), sd = sd(super$Rating)), col = "#7fcdbb", lwd = 2, add = TRUE)
+legend("topright", legend = c("Density", "Normal Distribution"), col = c("#2c7fb8", "#7fcdbb"), lwd = 2)
 
 
 ```
@@ -907,7 +799,8 @@ od 0**
 cor.data <- super[, c(7:10, 14, 16:17)]
 super.cor <- round(cor(cor.data, method = "spearman"), 2)
 
-corrplot(super.cor)
+corrplot(super.cor,
+         col = brewer.pal(n = 9, name = "BuPu"))
 ```
 
 ### Wnioski
@@ -970,7 +863,7 @@ jednoczynnikowej analizy wariancji (ANOVA)
 kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
-          color = "Branch", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          color = "Branch", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
           labs(title ="Wykresy pudełkowe Oceny i Filii") + easy_center_title()
           
@@ -982,7 +875,7 @@ ggboxplot(super, x = "Branch", y = "Rating",
 kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
-          color = "Payment", palette = c("#00AFBB", "#dc567a", "#FC4E07"), 
+          color = "Payment", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12)  + 
           labs(title ="Wykresy pudełkowe Oceny i Sposobu płatności") + easy_center_title()
 ```
@@ -993,7 +886,7 @@ ggboxplot(super, x = "Payment", y = "Rating",
 kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
-          color = "City", palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+          color = "City", palette = c("#cb181d", "#FC4E07", "#E7B800"), 
           legend = "none") + scale_y_continuous(breaks = seq(1, 10, 0.5)) + theme_minimal(base_size = 12) + 
           labs(title ="Wykresy pudełkowe Oceny i Miasta") + easy_center_title()
 ```
@@ -1043,3 +936,4 @@ statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności
 ## Test ANOVA dla wybranej metody płatności
 
 # Podsumowanie i wnioski
+</div>
