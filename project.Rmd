@@ -3,13 +3,13 @@
   subtitle: "Analiza czynników istotnie wpływających na satysfakcje klienta"
   author: "A. Jaworska, G. Kuczyńska, M. Stalmach"
   output:
-  rmdformats::readthedown:
-  highlight: kate
-  toc_float: true
-  toc_depth: 4
-  editor_options: 
+    rmdformats::readthedown:
+      highlight: kate
+      toc_float: true
+      toc_depth: 4
+      editor_options: 
   markdown: 
-  wrap: 72
+    wrap: 72
 ---
 
 # Wstęp
@@ -45,7 +45,7 @@ library(kableExtra)
 library(RColorBrewer)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 # wczytanie danych 
 super <- read.csv("supermarket_new.csv")
@@ -56,7 +56,7 @@ super <- read.csv("supermarket_new.csv")
 
 Zbiór danych supermarket_new zawiera następujące zmienne:
 
-```{r, echo = F}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data_description <- data.frame(
   Zmienna = c("Invoice id", "Branch", "City", "Customer type", "Gender", 
               "Product line", "Unit price", "Quantity", "Tax", "Total", 
@@ -98,14 +98,14 @@ data_description %>%
   row_spec(seq(2, nrow(data_description), 2), background = "#fbeaee")
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # struktura danych
 str(super)
 ```
 
 Funkcja *str* pozwala na określenie struktury analizowanych danych. Dzięki niej można określić typ analizowanych danych, całkowitą ich ilość (1000) i ilość zmiennych (17). Analiza pozwala zauważyć, iż zmienna Date zawierająca datę zakupu nie jest wyrażona w odpowiednim formacie. Przy użyciu pakietu *lubridate* nastąpi zmiana formatu z character na date.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # zmiana formatu zmiennej Date
 super <- super %>%
   mutate(Date = mdy(Date))
@@ -115,39 +115,39 @@ super <- super %>%
 
 Celem tego części jest kompleksowe oczyszczenie i przygotowanie danych z pliku "supermarket_new.csv". W szczególności skupimy się na identyfikacji i uzupełnieniu brakujących wartości w kluczowych kolumnach: City, Rating oraz gross.income. Dzięki zastosowaniu odpowiednich technik eksploracji, analizy oraz imputacji danych, walidacji końcowy zbiór będzie spójny, kompletny i gotowy do dalszych analiz.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 2. Sprawdzenie brakujących danych
 n_miss(super)
 ```
 
 W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest, jaki procent stanowią oraz jak je uzupełnić.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 prop_miss(super) 
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 vis_miss(super)
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 gg_miss_fct(super, fct = Gender)+theme(
   axis.text=element_text(size=14))
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 gg_miss_var(super)+theme(
   axis.text=element_text(size=14))
 ```
 
 Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków wstosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn -zwizualizowano braki w danych, również w kontekście kolumny Gender -przedstawiono współwystępowanie braków w różnych kolumnach.
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 # 3. Eksploracja danych
 table(super$Gender)
 table(super$Rating)
 ```
-```{r, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x=Rating))+ 
   geom_boxplot(fill="#6a51a3")+
   coord_flip() +
@@ -158,7 +158,7 @@ ggplot(super, aes(x=Rating))+
 
 Kolejno podjęto się eksploracji danych.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 4. Przekształcenia danych
 super$Sex <- factor(super$Gender)
 table(super$Sex) 
@@ -167,7 +167,7 @@ unique(super$Rating)
 
 Została wyznaczona tabela częstości dla kolumn Gender, zostały wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
 seqImpute <- function(x, last=max(x, na.rm=TRUE)) {  
   n <- length(x)  
@@ -190,7 +190,7 @@ super$City <- super_City_hd
 
 W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City według Branch - posortowanie danych w kolumnie City - uzupełnienie braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 # 6. Imputacja braków w kolumnie Rating metodą KNN
 super_knn <- kNN(super)  
 super_Rating <- super_knn$Rating  
@@ -200,14 +200,14 @@ super$Rating <- super_Rating
 
 W tym kroku została dokonana imputacja braków metodą KNN. Dla kolumny Rating zastosowano imputację braków metodą K-Nearest Neighbours, następnie zastąpiono oryginalną kolumnę imputowaną wersją.
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 # 7. Imputacja braków w kolumnie gross.income na podstawie pozostałych kolumn
 super$gross.income <- super$Total-super$cogs
 ```
 
 W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono zależności między kolumnami i na ich podstawie uzupełniono braki w 150 rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z większą precyzją.
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 # 8. Walidacja danych
 rules <- validator(
   gross.income==Total-cogs,
@@ -217,7 +217,7 @@ cf <- confront(super, rules, key="Invoice.ID")
 summary(cf)
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Wizualizacja wyników walidacji
 plot(cf, main="Walidacja obliczeń dla Total i dochodu", font.main = 1)
 # Nadpisanie niepoprawnych wartości wykrytych w procesie walidacji prawidłowymi
@@ -370,7 +370,7 @@ Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebi
 
 ## Liczba zakupionych produktów w podziale na sposób płatności.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
   geom_bar(stat = "identity") +
   labs(title = "Liczba zakupionych produktów w podziale na sposób płatności", 
@@ -386,7 +386,7 @@ Z powyższego wykresu można wywnioskować, że najwięcej produktów kupuje si�
 
 ## Wizualizacja dziennych przychodów w oddziałach z podziałem na miesiące
 
-```{r, message = FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Obliczanie dziennych przychodów
 super <- super %>% 
   group_by(Date, Branch) %>% 
@@ -439,7 +439,7 @@ Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały nast
 -   Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
 -   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części. \## Wizualizacja przedstawiająca najbardzej dochodowe pory dnia
 
-```{r, }
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super <- super %>%
   mutate(Time_numeric = hour(hms(Time)) + minute(hms(Time)) / 60 + second(hms(Time)) / 3600)
 super %>%
@@ -775,7 +775,7 @@ Test Kruskala-Wallisa to nieparametryczny test statystyczny używany do porówny
 
 *Ocena \~ Filia*
 
-```{r, echo=FALSE}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
@@ -787,7 +787,7 @@ ggboxplot(super, x = "Branch", y = "Rating",
 
 *Ocena \~ Sposób płatności*
 
-```{r, echo=FALSE}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
@@ -798,7 +798,7 @@ ggboxplot(super, x = "Payment", y = "Rating",
 
 *Ocena \~ Miasto*
 
-```{r, echo=FALSE}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
@@ -823,7 +823,7 @@ Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób płat
 
 Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup.
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 super$Branch <- as.factor(super$Branch)
 anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
