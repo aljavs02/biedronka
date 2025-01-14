@@ -142,7 +142,7 @@ gg_miss_var(super)+theme(
 
 Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków wstosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn -zwizualizowano braki w danych, również w kontekście kolumny Gender -przedstawiono współwystępowanie braków w różnych kolumnach.
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 3. Eksploracja danych
 table(super$Gender)
 table(super$Rating)
@@ -190,7 +190,7 @@ super$City <- super_City_hd
 
 W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City według Branch - posortowanie danych w kolumnie City - uzupełnienie braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 6. Imputacja braków w kolumnie Rating metodą KNN
 super_knn <- kNN(super)  
 super_Rating <- super_knn$Rating  
@@ -200,14 +200,14 @@ super$Rating <- super_Rating
 
 W tym kroku została dokonana imputacja braków metodą KNN. Dla kolumny Rating zastosowano imputację braków metodą K-Nearest Neighbours, następnie zastąpiono oryginalną kolumnę imputowaną wersją.
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 7. Imputacja braków w kolumnie gross.income na podstawie pozostałych kolumn
 super$gross.income <- super$Total-super$cogs
 ```
 
 W ostatnim kroku przy formowaniu założeń walidacyjnych zauważono zależności między kolumnami i na ich podstawie uzupełniono braki w 150 rekordach w kolumnie gross.income. Co pozwoliło na uzupełnienie braków z większą precyzją.
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 8. Walidacja danych
 rules <- validator(
   gross.income==Total-cogs,
@@ -695,7 +695,7 @@ W tej części zbadana zostanie normalność rozkładu na podstawie testów stat
 
 **H1: rozkład nie jest normalny**
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Zestaw testów na normalność
 
 ## Shapiro-Wilk
@@ -708,7 +708,7 @@ lillie.test(super$Rating)
 jarque.bera.test(super$Rating)
 ```
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Histogram
 
 plot.new()
@@ -775,7 +775,7 @@ Test Kruskala-Wallisa to nieparametryczny test statystyczny używany do porówny
 
 *Ocena \~ Filia*
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 kruskal.test(Rating ~ Branch, super)
 
 ggboxplot(super, x = "Branch", y = "Rating", 
@@ -787,7 +787,7 @@ ggboxplot(super, x = "Branch", y = "Rating",
 
 *Ocena \~ Sposób płatności*
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 kruskal.test(Rating ~ Payment, super)
 
 ggboxplot(super, x = "Payment", y = "Rating", 
@@ -798,7 +798,7 @@ ggboxplot(super, x = "Payment", y = "Rating",
 
 *Ocena \~ Miasto*
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 kruskal.test(Rating ~ City, super)
 
 ggboxplot(super, x = "City", y = "Rating", 
@@ -823,7 +823,7 @@ Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób płat
 
 Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup.
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super$Branch <- as.factor(super$Branch)
 anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
