@@ -1,0 +1,4 @@
+"0",""
+"0","# wczytanie danych "
+"0","super <- read.csv(""supermarket_new.csv"")"
+"0",""
