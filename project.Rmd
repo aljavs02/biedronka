@@ -299,7 +299,7 @@ Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości oc
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Rating, fill = factor(Payment))) +
   geom_density(alpha = 0.6, color = NA) +  
-  scale_fill_manual(values = c("bisque", "bisque4", "black"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
+  scale_fill_manual(values = c("#2b8cbe", "#bae4bc", "#b2e2e2"), labels = c("Gotówka", "Karta kredytowa", "Portfel elektroniczny")) + 
   labs(
     title = "Gęstość ocen klientów względem metody płatności",
     x = "Ocena klientów",
@@ -426,7 +426,7 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     plot.title = element_text(hjust = 0.5, size = 13),  
     legend.position = "top",
     legend.title = element_text(size = 11))
-```
+``` 
 
 Powyższy wykres przedstawia dzienne dochody dla poszczególnych oddziałów w podziale na tygodnie miesiąca z zaznaczonymi wartościami minimalnymi oraz maksymalnymi.
 
@@ -484,6 +484,11 @@ super %>%
   row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
   row_spec(2, bold = F, background = "#fbeaee")
 ```
+- W filii C klienci generują najwyższe średnie przychody (16,05) spośród analizowanych lokalizacji, co znajduje odzwierciedlenie również w wyższej medianie (12,92) oraz kwartylach (Q1: 5,78; Q3: 23,61). Wskazuje to na wyższy poziom dochodów w tej filii w porównaniu do A i B, przy jednocześnie największym zróżnicowaniu wartości transakcji (odchylenie standardowe: 12,53).
+
+- Filia A charakteryzuje się najniższymi średnimi przychodami (14,87) oraz medianą (11,47). Wartości kwartylowe (Q1: 6,55; Q3: 21,87) również wskazują na niższy poziom konsumpcji w porównaniu do pozostałych filii. Dodatnia skosność (0,90) i niższe odchylenie standardowe (11,03) sugerują, że wydatki klientów są bardziej jednorodne, z większą liczbą mniejszych transakcji.
+
+- Filia B osiąga wyniki pośrednie między filią A a C – średnia wartość przychodów wynosi 15,23, a mediana 12,04. Wartości kwartylowe (Q1: 5,71; Q3: 22,17) oraz dodatnia skosność (0,88) wskazują, że większa część klientów dokonuje mniejszych zakupów, choć występują też wyższe transakcje, zbliżone do tych w innych filiach.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -513,6 +518,11 @@ super %>%
   row_spec(c(1, 3), bold = F, background = "#f2c0cd", color = "#222222") %>%    
   row_spec(2, bold = F, background = "#fbeaee")
 ```
+- W Yangon klienci generują najwyższe średnie przychody (16,24) spośród analizowanych lokalizacji, co odzwierciedla się również w najwyższej medianie (13,23) oraz kwartylach (Q1: 6,93; Q3: 23,56). Relatywnie niska skosność rozkładu (0,76) sugeruje, że większa liczba klientów ponosi wyższe koszty zakupów, a rozbieżności między klientami są umiarkowane.
+
+- W Naypyitaw średnie przychody wynoszą 15,41, co plasuje to miasto na drugim miejscu pod względem poziomu konsumpcji. Mediana (12,24) i wartości kwartylowe (Q1: 4,89; Q3: 22,85) wskazują na większe zróżnicowanie wydatków klientów. Mniejsza skosność (0,83) i kurtoza (2,71) w porównaniu do Mandalay sugerują bardziej wyrównany rozkład przychodów, jednak nadal obecna jest tendencja do większej liczby niższych wartości transakcji.
+
+- Mandalay charakteryzuje się najniższą średnią wartością przychodów (14,47) oraz medianą (10,76), co wskazuje na ogólnie niższy poziom zakupów w porównaniu do Yangon i Naypyitaw. Wartości kwartylowe (Q1: 6,08; Q3: 20,39) oraz wyższa skosność (1,11) sugerują, że większość klientów dokonuje mniejszych transakcji, z kilkoma wyjątkami dużych wydatków.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -645,9 +655,8 @@ super %>%
   row_spec(2, bold = F, background = "#fbeaee")
 ```
 
-Analiza statystyk kosztów zakupów (Total) w trzech miastach sugeruje, że w Yangon znajduje się większa liczba klientów wydających więcej na zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji w porównaniu z Mandalay i Naypyitaw.
-
-Dodatkowo, rozkład wydatków w Yangon jest mniej skośny (0,76), co sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część klientów wydaje mniej, co wynika z większej skośności rozkładów i niższych median.
+- w Yangon znajduje się większa liczba klientów wydających więcej na zakupy. Średnia wartość wydatków w tym mieście (341,05) jest najwyższa spośród analizowanych lokalizacji, a mediana (277,79) oraz wartości kwartylowe (Q1: 145,59; Q3: 494,76) wskazują na wyższy poziom konsumpcji w porównaniu z Mandalay i Naypyitaw.
+- rozkład wydatków w Yangon jest mniej skośny (0,76), co sugeruje, że znaczna liczba klientów ponosi stosunkowo wysokie koszty zakupów, a rozbieżności między klientami są umiarkowane. W Mandalay i Naypyitaw, mimo porównywalnych maksymalnych wydatków, większa część klientów wydaje mniej, co wynika z większej skośności rozkładów i niższych median.
 
 ## Ceny
 
@@ -680,7 +689,10 @@ super %>%
   row_spec(2, bold = F, background = "#fbeaee")
 ```
 
-Dane wskazują na zbliżone średnie ceny w różnych liniach produktów, które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion accessories). Rozproszenie cen, mierzone odchyleniem standardowym, jest stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość stabilne w obrębie każdej kategorii. Mediany są bliskie średnim, co sugeruje symetryczny rozkład cen. Niskie wartości skośności i kurtozy potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w analizowanych liniach produktów.
+- Dane wskazują na zbliżone średnie ceny w różnych liniach produktów, które wahają się od 53,55 (Electronic accessories) do 57,15 (Fashion accessories). 
+- Rozproszenie cen, mierzone odchyleniem standardowym, jest stosunkowo jednolite w granicach 26–27, co oznacza, że ceny są dość stabilne w obrębie każdej kategorii. 
+- Mediany są bliskie średnim, co sugeruje symetryczny rozkład cen. N
+- iskie wartości skośności i kurtozy potwierdzają brak znaczących odchyleń od normalnego rozkładu cen w analizowanych liniach produktów.
 
 # Wnioskowanie (testy statystyczne)
 
@@ -822,9 +834,13 @@ Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób płat
 
 Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach, gdy chce się sprawdzić, czy istnieją istotne różnice pomiędzy średnimi kilku grup.
 
+**H0: Średnie wartości zmiennej zależnej w różnych filiach (Branch) są równe.**
+
+**H1: Średnie wartości zmiennej zależnej różnią się pomiędzy co najmniej dwoma filiami.**
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super$Branch <- as.factor(super$Branch)
-anova_result <- aov(gross.income ~ Branch, data = super)
+anova_result1 <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
 ```
 
@@ -833,5 +849,18 @@ summary(anova_result)
 Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
 
 ## Test ANOVA dla wybranej metody płatności
+
+**H0: Średnie wartości zmiennej zależnej są takie same dla wszystkich metod płatności.**
+
+**H1: Co najmniej jedna średnia różni się od pozostałych.**
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+super$Payment <- as.factor(super$Payment)
+anova_result1 <- aov(gross.income ~ Payment, data = super)
+summary(anova_result1)
+```
+### Wnioski 
+
+Bardzo niska wartość F sugeruje, że różnice między grupami (metodami płatności) są minimalne w porównaniu do różnic wewnątrz grup. Wartość p jest znacznie większa niż przyjęty poziom istotności (zwykle 0,05). Oznacza to, że nie mamy podstaw do odrzucenia hipotezy zerowej.Test ANOVA nie wykazał statystycznie istotnych różnic pomiędzy średnimi wartościami zmiennej zależnej dla różnych metod płatności.Metoda płatności nie ma istotnego wpływu na analizowaną zmienną.
+
 
 # Podsumowanie i wnioski
