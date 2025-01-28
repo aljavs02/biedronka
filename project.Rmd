@@ -840,7 +840,7 @@ Test ANOVA (Analysis of Variance, analiza wariancji) jest stosowany w sytuacjach
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super$Branch <- as.factor(super$Branch)
-anova_result1 <- aov(gross.income ~ Branch, data = super)
+anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
 ```
 
