@@ -16,7 +16,7 @@
 
 ## Opis problemu
 
-Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
+Celem projektu jest eksploracja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
 
 ## Baza danych
 
@@ -123,7 +123,7 @@ n_miss(super)
 W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest, jaki procent stanowią oraz jak je uzupełnić.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-prop_miss(super) 
+round(prop_miss(super) *100,2)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -162,7 +162,7 @@ Kolejno podjęto się eksploracji danych.
 super$Sex <- factor(super$Gender)
 ```
 
-Została wyznaczona tabela częstości dla kolumn Gender, zostały wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
+Została wyznaczona tabela częstości dla kolumn Gender oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
