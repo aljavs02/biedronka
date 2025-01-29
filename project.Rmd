@@ -864,3 +864,4 @@ Bardzo niska wartość F sugeruje, że różnice między grupami (metodami płat
 
 
 # Podsumowanie i wnioski
+W procesie oczyszczania i przygotowania danych usunięto braki oraz zweryfikowano poprawność wartości, zapewniając spójność zbioru. Zastosowano różne techniki imputacji: sekwencyjną dla City, KNN dla Rating oraz obliczeniową dla gross.income. Finalnie przeprowadzono walidację, wykrywając i korygując błędne wartości w Total. Dzięki temu dane były kompletne, poprawne i gotowe do dalszej analizy.
