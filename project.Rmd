@@ -140,7 +140,9 @@ gg_miss_var(super)+theme(
   axis.text=element_text(size=14))
 ```
 
-Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków wstosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn -zwizualizowano braki w danych, również w kontekście kolumny Gender -przedstawiono współwystępowanie braków w różnych kolumnach.
+Wyznaczono następujące braki w kolumnach: Rating (150), City (100), gross.income (150). Sprawdzono także -procent braków w stosunku do całego zbioru danych -podsumowano braki dla poszczególnych kolumn 
+- zwizualizowano braki w danych, również w kontekście kolumny Gender 
+- przedstawiono współwystępowanie braków w różnych kolumnach.
 
 ```{r, warning=FALSE}
 # 3. Eksploracja danych
@@ -185,7 +187,12 @@ table(super$City)
 super$City <- super_City_hd 
 ```
 
-W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi wartościami. Dodana została wartośc zapasowa na końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno: - zwrot oryginalnej długości wektora - sortowanie kolumny City według Branch - posortowanie danych w kolumnie City - uzupełnienie braków w City za pomocą funkcji segImpute - podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
+W przedostatnim kroku zostały uzupełnione braki w danych, zastępując je kolejnymi dostępnymi wartościami. Dodana została wartość zapasowa na końcu oraz identyfikacja braków w wektorze. Następnie zastąpione zostały braki kolejnymi wartościami i zostały zaktualizowane indeksy braków. Kolejno: 
+- zwrot oryginalnej długości wektora 
+- sortowanie kolumny City według Branch 
+- posortowanie danych w kolumnie City 
+- uzupełnienie braków w City za pomocą funkcji segImpute 
+- podsumowanie nowej kolumny City oraz podsumowanie oryginalnej kolumny City.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 6. Imputacja braków w kolumnie Rating metodą KNN
@@ -228,7 +235,7 @@ W procesie walidacji dostrzeżono nieścisłości dla ponad 300 rekordów w odni
 
 # Wizualizacje
 
-W tej części zajmiemy się opracowaniem wizualizacji analizowanych danych.
+W tej części zajęto się opracowaniem wizualizacji analizowanych danych.
 
 ## Wizualizacja gęstości ocen względem zmiennych
 
@@ -272,7 +279,7 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     legend.title = element_text(size = 11))      
 ```
 
-Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10.Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre". Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
+Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10. Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre". Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
 
 ### Wykres gęstości ocen klientów względem typu klienta
 
@@ -312,7 +319,7 @@ ggplot(super, aes(x = Rating, fill = factor(Payment))) +
     legend.title = element_text(size = 11))   
 ```
 
-Na powyższym wykresia można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
+Na powyższym wykresie można zauważyć spójność ocen u klientów płacących gotówką lub portfelem elektrocznicznym. Szczyt gęstości dla tych grup znajduje się w okolicach 7. Klienci, którzy jako metodę płatności wybrali kartę kredytową częściej oceniali ogólne doświadczenia zakupowe w okolicach 8, na co wskazuje szczyt gęstości.
 
 ## Wizualizacja rozkładu ocen klietów względem kategorii zakupowanych produktów
 
@@ -344,7 +351,7 @@ super %>%
 
 Średnia ocen zadowolenia z zakupów dla poszczególnych miast okazała sie zbliżona. Jednakże można zauważyć, że najwyżej klienci oceniali swoje doświadczenie w Mandalay, następnie w Yangon a kolejno w Naypyitaw. Wykres ilustruje, że lokalizacja miała raczej niewielki wpływ na ich satysfakcję oraz, że w każdej miejscowości klienci oceniają swój proces zakupowy jako zadowalający.
 
-## Wykres procentowy udziału linii produktowych w całkowitych kosztach.
+### Wykres procentowy udziału linii produktowych w całkowitych kosztach.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 product_costs <- super %>%
@@ -367,7 +374,7 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
 
 Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
 
-## Liczba zakupionych produktów w podziale na sposób płatności.
+### Liczba zakupionych produktów w podziale na sposób płatności.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(super, aes(x = Payment, y = Quantity, fill = Payment)) +
@@ -436,7 +443,9 @@ Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały nast
 
 -   Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
 -   Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
--   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części. \## Wizualizacja przedstawiająca najbardzej dochodowe pory dnia
+-   Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części.
+
+## Wizualizacja przedstawiająca najbardzej dochodowe pory dnia
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 super <- super %>%
@@ -553,10 +562,10 @@ super %>%
   row_spec(c(1, 3, 5), bold = F, background = "#fbeaee")
 ```
 
--   Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
--   Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
--   Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
--   Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
+- Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
+- Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
+- Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
+- Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -587,9 +596,9 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
--   Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
--   Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
--   Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
+- Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
+- Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
+- Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 super %>% 
@@ -620,9 +629,9 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
--   Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
--   Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
--   Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
+- Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
+- Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
+- Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
 
 ## Total
 
@@ -814,9 +823,9 @@ ggboxplot(super, x = "City", y = "Rating",
 
 We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma istotnych statystycznie różnic między:
 
--   medianami ocen doświadczenia zakupowego w trzech filiach
--   medianami ocen doświadczenia zakupowego względem trzech możliwych sposobów płatności;
--   medianami ocen doświadczenia zakupowego względem miast funkcjonowania sklepów.
+- medianami ocen doświadczenia zakupowego w trzech filiach
+- medianami ocen doświadczenia zakupowego względem trzech możliwych sposobów płatności;
+- medianami ocen doświadczenia zakupowego względem miast funkcjonowania sklepów.
 
 Bazując na powyższych możemy stwierdzić, że filia, miasto czy sposób płatności nie mają istotnego wpływu na finalną ocenę zakupów przez klienta. Potwierdzeniem powyższych wyników są również wygenerowane wykresy pudełkowe, w których zakresy kwartylów są do siebie znacznie zbliżone.
 
@@ -855,7 +864,9 @@ Bardzo niska wartość F sugeruje, że różnice między grupami (metodami płat
 # Podsumowanie i wnioski
 W procesie oczyszczania i przygotowania danych usunięto braki oraz zweryfikowano poprawność wartości, zapewniając spójność zbioru. Zastosowano różne techniki imputacji: sekwencyjną dla City, KNN dla Rating oraz obliczeniową dla gross.income. Finalnie przeprowadzono walidację, wykrywając i korygując błędne wartości w Total. Dzięki temu dane były kompletne, poprawne i gotowe do dalszej analizy.
 
-!!!WNIOSKI OLA SKIBIDI!!!
+Analiza wizualizacji gęstości ocen klientów pokazała, że rozkład ocen jest zbliżony we wszystkich filiach sklepu, z najwyższą koncentracją ocen w przedziale 6–8. Klienci z kartą członkowską oraz płacący kartą kredytową wykazywali tendencję do przyznawania wyższych ocen, podczas gdy klienci płacący gotówką lub portfelem elektronicznym mieli bardziej zróżnicowane wyniki. Kategoria produktów "zdrowie i uroda" oraz "jedzenie i napoje" cieszyły się największym zadowoleniem klientów, a produkty elektroniczne były najgorzej oceniane. W analizie miast zauważono, że różnice w średnich ocenach były niewielkie, a lokalizacja nie miała znaczącego wpływu na satysfakcję klientów. Dodatkowo, najbardziej dochodowy okres dla supermarketu przypada na godziny wieczorne, szczególnie między 19 a 20, co może być pomocne przy dostosowywaniu godzin otwarcia sklepu.
+
+
 W przeprowadzonej analizie statystycznej oceniono różne aspekty sprzedaży oraz doświadczeń zakupowych klientów na podstawie testów normalności, korelacji i testów porównawczych.
 
 Badanie normalności wykazało, że rozkład ocen klientów (Rating) odbiega od normalnego, co potwierdziły testy statystyczne i wizualizacja histogramu. W związku z tym w dalszej analizie zastosowano metody **nieparametryczne**.
