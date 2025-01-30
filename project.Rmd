@@ -16,7 +16,7 @@
 
 ## Opis problemu
 
-Celem projektu jest eksploatacja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
+Celem projektu jest eksploracja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
 
 ## Baza danych
 
@@ -123,7 +123,7 @@ n_miss(super)
 W zbiorze zidentyfikowano 400 brakujących rekordów. W kolejnych krokach zbadano zbadano, które kolumny zawierające wartości NA, ile ich jest, jaki procent stanowią oraz jak je uzupełnić.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-prop_miss(super) 
+round(prop_miss(super) *100,2)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -162,7 +162,7 @@ Kolejno podjęto się eksploracji danych.
 super$Sex <- factor(super$Gender)
 ```
 
-Została wyznaczona tabela częstości dla kolumn Gender, zostały wyświetlone unikalne wartości w kolumnie rating oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
+Została wyznaczona tabela częstości dla kolumn Gender oraz został zbudowany wykres pudełkowy dla kolumny Rating z zaznaczeniem wartości odstających. Dokonano także konwersji kolumny Gender na zmienną kategoryczną jako Sex oraz wyznaczona tabela częstości dla nowej kolumny Sex.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # 5. Imputacja brakujących danych w City (metoda sekwencyjna)
@@ -411,7 +411,7 @@ ggplot(super, aes(x = Date, y = Daily_Total_Revenue, color = Branch, group = Bra
     aes(x = Date, y = Value, shape = Type),
     size = 3) +
   facet_wrap(~Month, scales = "free_x") +
-  scale_color_brewer(palette = "YlGnBu") +
+  scale_color_brewer(palette = "Set2") +
   labs(
     title = "Dzienne przychody w oddziałach",
     x = "Data",
@@ -732,8 +732,6 @@ legend("topright", legend = c("Density", "Normal Distribution"), col = c("#2c7fb
 
 ```
 
-### Wnioski
-
 Na podstawie wyników wygenerowanych dzięki testom normalności można zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż 0.05, a zatem istnieją istotne statystycznie różnice między rozkładem danych a rozkładem normalnym. Zgodnie z powyższym należy odrzucić hipotezę zerową mówiącą o normalności rozkładu.
 
 Powyższe stwierdzenie potwierdza wykres, na którym widoczny jest symetryczny rozkład danych, jednak odbiegający od klasycznego rozkładu normalnego. Występują pewne odstępstwa w częstotliwościach w porównaniu do idealnego rozkładu normalnego (czerwona linia), a zatem wykres dodatkowo potwierdza konieczność odrzucenia H0.
@@ -756,8 +754,6 @@ corrplot(super.cor,
          col = brewer.pal(n = 9, name = "BuPu"))
 ```
 
-### Wnioski
-
 Wyniki korelacji wskazują, że cena jednostkowa, liczba zakupionych produktów, podatek, całkowita cena, koszty sprzedanych towarów oraz dochód brutto są ze sobą silnie powiązane, co wynika z ich bezpośredniego związku z transakcjami finansowymi. Wyższa cena jednostkowa i większa liczba produktów prowadzą do wzrostu pozostałych wartości. Natomiast oceny klientów (Rating) wykazują minimalną korelację z innymi zmiennymi, sugerując, że są one bardziej subiektywne i niezależne od wyników transakcji. W rezultacie, zależności między zmiennymi koncentrują się głównie na aspektach finansowych, podczas gdy oceny klientów pozostają mniej związane z tymi parametrami.
 
 ## Test Wilcoxona
@@ -771,8 +767,6 @@ Test Wilcoxona jest testem statystycznym zaliczanym do metod nieparametrycznych,
 ```{r}
 wilcox.test(super$Rating, super$Total)
 ```
-
-### Wnioski
 
 Istnieje znacząca różnica między oceną doświadczenia zakupowego klienta (Rating) a całkowitą kwotą zapłaconą przez klienta (Total). Hipoteza zerowa w teście Wilcoxona zakłada, że mediana różnicy między dwoma grupami wynosi zero, co oznacza brak istotnej różnicy między nimi. P-value bliskie zeru wskazuje, że różnica jest istotna statystycznie. Dodatkowo otrzymany wynik W = 0 podkreśla ekstremalność tej różnicy — występuje znaczna rozbieżność między rozkładami zmiennych.Oznacza to, że ocena klienta nie była zależna od kwoty jaką zapłacił w sklepie.
 
@@ -818,8 +812,6 @@ ggboxplot(super, x = "City", y = "Rating",
   labs(title ="Wykresy pudełkowe Oceny i Miasta") + easy_center_title()
 ```
 
-### Wnioski
-
 We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma istotnych statystycznie różnic między:
 
 -   medianami ocen doświadczenia zakupowego w trzech filiach
@@ -844,8 +836,6 @@ anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
 ```
 
-### Wnioski
-
 Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
 
 ## Test ANOVA dla wybranej metody płatności
@@ -858,9 +848,20 @@ super$Payment <- as.factor(super$Payment)
 anova_result1 <- aov(gross.income ~ Payment, data = super)
 summary(anova_result1)
 ```
-### Wnioski 
 
 Bardzo niska wartość F sugeruje, że różnice między grupami (metodami płatności) są minimalne w porównaniu do różnic wewnątrz grup. Wartość p jest znacznie większa niż przyjęty poziom istotności (zwykle 0,05). Oznacza to, że nie mamy podstaw do odrzucenia hipotezy zerowej.Test ANOVA nie wykazał statystycznie istotnych różnic pomiędzy średnimi wartościami zmiennej zależnej dla różnych metod płatności.Metoda płatności nie ma istotnego wpływu na analizowaną zmienną.
 
 
 # Podsumowanie i wnioski
+W procesie oczyszczania i przygotowania danych usunięto braki oraz zweryfikowano poprawność wartości, zapewniając spójność zbioru. Zastosowano różne techniki imputacji: sekwencyjną dla City, KNN dla Rating oraz obliczeniową dla gross.income. Finalnie przeprowadzono walidację, wykrywając i korygując błędne wartości w Total. Dzięki temu dane były kompletne, poprawne i gotowe do dalszej analizy.
+
+!!!WNIOSKI OLA SKIBIDI!!!
+W przeprowadzonej analizie statystycznej oceniono różne aspekty sprzedaży oraz doświadczeń zakupowych klientów na podstawie testów normalności, korelacji i testów porównawczych.
+
+Badanie normalności wykazało, że rozkład ocen klientów (Rating) odbiega od normalnego, co potwierdziły testy statystyczne i wizualizacja histogramu. W związku z tym w dalszej analizie zastosowano metody **nieparametryczne**.
+
+Analiza korelacji Spearmana pokazała silne powiązania między zmiennymi finansowymi, natomiast oceny klientów okazały się niezależne od tych aspektów. Test Wilcoxona potwierdził brak istotnej zależności między oceną doświadczenia zakupowego a całkowitą kwotą zakupu.
+
+Test Kruskala-Wallisa wykazał, że filia, sposób płatności oraz miasto funkcjonowania sklepu nie wpływają istotnie na ocenę klientów. Dodatkowo analiza ANOVA nie ujawniła statystycznie istotnych różnic w dochodach brutto między filiami ani między różnymi metodami płatności.
+
+Podsumowując, wyniki wskazują, że oceny klientów są subiektywne i nie zależą od czynników finansowych czy lokalizacyjnych, a sprzedaż w różnych filiach i przy różnych metodach płatności jest względnie stabilna.
