@@ -259,7 +259,7 @@ ggplot(super, aes(x = Rating, fill = factor(Branch))) +
     scale_fill_manual(values = c("#2b8cbe", "#bae4bc", "#b2e2e2"))  
 ```
 
-Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje doświadczenie zakupowe w tym zakresie. Filia B (kolor jasnoniebieski) ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii. Filia A (kolor żółty) i filia C (kolor fioletowy) mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
+Wszystkie filie mają podobny rozkład ocen, ze szczytem gęstości w przedziale między 6 a 8, co oznacza, że większość klientów ocenia swoje doświadczenie zakupowe w tym zakresie. Filia B ma bardziej wyraźny szczyt w porównaniu do pozostałych, co może sugerować bardziej spójne oceny klientów w tej filii. Filia A i filia C mają bardziej zróżnicowane rozkłady, z delikatnie szerszymi skrzydłami gęstości (więcej ocen skrajnych, zarówno niższych, jak i wyższych).
 
 ### Wykres gęstości ocen klientów względem płci
 
@@ -299,7 +299,7 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     legend.title = element_text(size = 11))   
 ```
 
-Klienci z kartą członkowską (kolor niebieski) osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty (kolor zielony) również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony. Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7. Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
+Klienci z kartą członkowską osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony. Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7. Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
 ### Wykres gęstości ocen klientów względem metody płatności
 
