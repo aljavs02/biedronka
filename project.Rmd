@@ -16,11 +16,11 @@
 
 ## Opis problemu
 
-Celem projektu jest eksploracja historycznych danych dotyczących sprzedaży w supermarketach oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
+Celem projektu jest eksploracja historycznych danych dotyczących sprzedaży w supermarkecie oraz identyfikacja czynników mogących istotnie wpływać na ocenę satysfakcji klientów dotyczącą ich ogólnego doświadczenia zakupowego.
 
 ## Baza danych
 
-Podstawą analizy był zbiór danych supermarket_new, zawierający dane pochodzące z jednej z historycznych sprzedaży firm supermarketów, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
+Podstawą analizy był zbiór danych "supermarket_new", zawierający dane dotyczące sprzedaży w sieci supermarketów, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące.
 
 ```{r setup, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -54,7 +54,7 @@ super <- read.csv("supermarket_new.csv")
 
 ## Zmienne
 
-Zbiór danych supermarket_new zawiera następujące zmienne:
+Zbiór danych "supermarket_new" zawiera następujące zmienne:
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data_description <- data.frame(
@@ -281,7 +281,7 @@ ggplot(super, aes(x = Rating, fill = factor(Sex))) +
     legend.title = element_text(size = 11))      
 ```
 
-Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10. Szczyt gęstości obu płci plasuje się w okolicach 7. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre". Mężczyźni mają nieco wyższe wartości gęstości w zakresie ocen od 6 do 8, co może wskazywać, że częściej oceniają swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 9 do 10), co sugeruje większe rozproszenie ocen.
+Zarówno mężczyźni, jak i kobiety mają oceny rozkładające się w przedziale od 4 do 10. Szczyt gęstości mężczyzn plasuje się w okolicach 6-7, natomiast kobiet 7-8. Oznacza to, że większość klientów ocenia swoje doświadczenie zakupowe jako "dobre". Szczyt gęstości wykresu dla mężczyzn może wskazywać, że częściej oceniają oni swoje doświadczenia zakupowe wyżej niż kobiety w tym przedziale. Kobiety mają natomiast nieco wyższe wartości gęstości na krańcach ocen (od 4 do 5 oraz od 8 do 9), co sugeruje większe rozproszenie ocen.
 
 ## Wykres gęstości ocen klientów względem typu klienta
 
@@ -301,7 +301,7 @@ ggplot(super, aes(x = Rating, fill = factor(Customer.type))) +
     legend.title = element_text(size = 11))   
 ```
 
-Klienci z kartą członkowską osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty również mają swój szczyt w okolicach 7, jednak ich rozkład jest bardziej rozproszony. Oceny klientów z kartą członkowską są bardziej spójne, z wyraźnym szczytem gęstości wokół 7. Klienci bez karty mają bardziej zróżnicowane oceny, co sugeruje większą różnorodność w doświadczeniach zakupowych.
+Klienci z kartą członkowską osiągają szczyt gęstości ocen w okolicach 7. Klienci bez karty natomiast mają swój szczyt w okolicach 6, a ich rozkład jest bardziej rozproszony. ich oceną są bardziej zróżnicowane, co sugeruje większą różnorodność w doświadczeniach zakupowych.
 
 ## Wykres gęstości ocen klientów względem metody płatności
 
@@ -335,7 +335,7 @@ ggplot(super, aes(x=Rating))+
 
 ```
 
-Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6.5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8.5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowani byli klienci kupujący produkty należace do akcesoriów elektronicznych.
+Dla kategorii akcesoriów modowych, domowych i codziennych oraz kategorii sportowo-podróżniczej najwięcej osób oceniła swoją satysfakcję z zakupów na 6,5-7. Natomiast wśród produktów branży zdrowia i urody a także jedzenia i napojów najczęściej oceny oscylowały między 8,5 a 9. Oznacza to, że klienci kupujący produkty z tych kategorii byli istotnie bardziej zadowoleni z zakupów. Najmniej usatysfkacjonowani byli klienci kupujący produkty należace do akcesoriów elektronicznych.
 
 ## Wizualizacja średniej ocen zadowolenia klientów dla poszczególnych miast
 
@@ -374,7 +374,7 @@ ggplot(product_costs, aes(x = "", y = Percentage, fill = Product.line)) +
                                 "Health and beauty", "Home and lifestyle", "Sports and travel"))
 ```
 
-Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że tak sam udział maakcesoria związane z modą jak i akcesoria elektroniczne.
+Procentowy udział linii produktowych w całych kosztach jest zbliżony do siebie. Największy udział linii produktowej odnosi się do jedzenia i napojów natomiast najmniejszy udział ma zdrowie i uroda. Można również zauważyć, że taki sam udział mają akcesoria związane z modą jak i akcesoria elektroniczne.
 
 ## Liczba zakupionych produktów w podziale na sposób płatności.
 
@@ -446,9 +446,9 @@ Spośród trzech analizowanych oddziałów, najlepiej radził sobie Oddział B, 
 
 Dla poszczególnych oddziałów, najlepszy i najgorszy miesiąc wyglądały następująco:
 
-- Oddział A: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
-- Oddział B: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
-- Oddział C: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części.
+- **Oddział A**: Najlepszym miesiącem był styczeń, w którym zanotowano wyraźny szczyt w połowie miesiąca, wskazujący na najwyższe przychody w tym okresie. Natomiast najgorszym miesiącem był marzec, charakteryzujący się mniejszymi wahaniami i brakiem wyraźnych szczytów, co sugeruje niższe przychody.
+- **Oddział B**: Luty okazał się najlepszym miesiącem, gdyż przez większość miesiąca obserwowano stabilny wzrost przychodów, osiągając szczyt na jego końcu. Najgorszym miesiącem był marzec, w którym występowały spore wahania przychodów, bez wyraźnych długotrwałych szczytów.
+- **Oddział C**: Styczeń był najlepszym miesiącem, z wyraźnymi wahaniami i wysokimi szczytami pod koniec miesiąca. Luty, mimo stosunkowo stabilnych przychodów, okazał się najgorszym miesiącem, choć zanotowano lekki wzrost w środkowej jego części.
 
 ## Wizualizacja przedstawiająca najbardzej dochodowe pory dnia
 
@@ -567,9 +567,9 @@ super %>%
   row_spec(c(1, 3, 5), bold = F, background = "#fbeaee")
 ```
 
-- Najwyższa średnia dochodu brutto: "Home and lifestyle" (16.03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
-- Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14.53).
-- Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12.12.
+- Najwyższa średnia dochodu brutto: "Home and lifestyle" (16,03), co sugeruje, że ta kategoria produktów przynosi największe dochody.
+- Najniższa średnia dochodu brutto: Grupa "Fashion accessories" (14,53).
+- Największe ryzyko (odchylenie standardowe): "Home and lifestyle" z odchyleniem 12,12.
 - Skośność i kurtoza są w każdej grupie dodatnie, co wskazuje na prawostronne rozkłady, gdzie wiele wartości skupia się poniżej średniej z nielicznymi dużymi dochodami.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -601,7 +601,7 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
-- Średni dochód brutto kobiet (15.96) jest wyższy niż mężczyzn (14.80), co sugeruje, że kobiety generują większe zakupy.
+- Średni dochód brutto kobiet (15,96) jest wyższy niż mężczyzn (14,80), co sugeruje, że kobiety generują większe zakupy.
 - Mediana również jest wyższa u kobiet, co świadczy o bardziej stabilnych zakupach o wyższych wartościach.
 - Mężczyźni mają nieco większą zmienność (niższa skośność i wyższa kurtoza), co sugeruje częstsze występowanie większych odchyleń od średnich wartości.
 
@@ -634,9 +634,9 @@ super %>%
   row_spec(1, bold = F, background = "#fbeaee")
 ```
 
-- Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15.61) niż klienci bez karty (15.15).
-- Skośność dla klientów bez karty (0.94) jest wyższa niż dla klientów z kartą (0.84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
-- Kurtoza jest wyższa w przypadku klientów bez karty (3.05), co oznacza częstsze i większe odchylenia od średniej.
+- Klienci z kartą członkowską (Member) generują wyższy średni dochód brutto (15,61) niż klienci bez karty (15,15).
+- Skośność dla klientów bez karty (0,94) jest wyższa niż dla klientów z kartą (0,84), co wskazuje, że rozkład dochodów dla klientów normalnych jest bardziej asymetryczny z większą liczbą mniejszych transakcji.
+- Kurtoza jest wyższa w przypadku klientów bez karty (3,05), co oznacza częstsze i większe odchylenia od średniej.
 
 ## Total
 
@@ -746,7 +746,7 @@ legend("topright", legend = c("Density", "Normal Distribution"), col = c("#2c7fb
 
 ```
 
-Na podstawie wyników wygenerowanych dzięki testom normalności można zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż 0.05, a zatem istnieją istotne statystycznie różnice między rozkładem danych a rozkładem normalnym. Zgodnie z powyższym należy odrzucić hipotezę zerową mówiącą o normalności rozkładu.
+Na podstawie wyników wygenerowanych dzięki testom normalności można zauważyć, iż p-value dla każdego z testów przyjmuje wartość mniejszą niż 0,05, a zatem istnieją istotne statystycznie różnice między rozkładem danych a rozkładem normalnym. Zgodnie z powyższym należy odrzucić hipotezę zerową mówiącą o normalności rozkładu.
 
 Powyższe stwierdzenie potwierdza wykres, na którym widoczny jest symetryczny rozkład danych, jednak odbiegający od klasycznego rozkładu normalnego. Występują pewne odstępstwa w częstotliwościach w porównaniu do idealnego rozkładu normalnego (czerwona linia), a zatem wykres dodatkowo potwierdza konieczność odrzucenia H0.
 
@@ -826,7 +826,7 @@ ggboxplot(super, x = "City", y = "Rating",
   labs(title ="Wykresy pudełkowe Oceny i Miasta") + easy_center_title()
 ```
 
-We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło więcej niż założony poziom istotności 0.05. Oznacza to, że nie mamy wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma istotnych statystycznie różnic między:
+We wszystkich badanych przypadkach testy wykazały, iż p-value wyniosło więcej niż założony poziom istotności 0,05. Oznacza to, że nie mamy wystarczających dowodów, aby odrzucić hipotezę zerową. W praktyce nie ma istotnych statystycznie różnic między:
 
 - medianami ocen doświadczenia zakupowego w trzech filiach
 - medianami ocen doświadczenia zakupowego względem trzech możliwych sposobów płatności;
@@ -850,7 +850,7 @@ anova_result <- aov(gross.income ~ Branch, data = super)
 summary(anova_result)
 ```
 
-Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0.05).
+Następujące wyniki pokazują, że nie istnieje praktycznie żadna istotność pomiędzy oddziałem supercentrum a dochodem brutto. Wartość F jest bardzo niska - wynosi niecałe 1. Oznacza to, że różnice w dochodach brutto między poszczególnymi filiami są bardzo małe, więc są nieistotne statystycznie. Wartość p wynosi dużo więcej niż umowny poziom istotności (zazwyczaj jest to 0,05).
 
 ## Test ANOVA dla wybranej metody płatności
 
