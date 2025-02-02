@@ -28,3 +28,4 @@ This dataset contains three months of sales data from three Biedronka supermarke
 </ul>
 
 ## Split of work 
+We are team players, and despite having assigned tasks, each of us actively participated in the project execution process through continuous improvement and consultations. We collaborated closely, sharing insights and feedback to enhance the quality of our work and ensure the best possible outcomes.
